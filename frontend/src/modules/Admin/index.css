@@ -1,0 +1,16 @@
+/* Button  */
+.successBtn{
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    outline: none;
+    transition: background-color 0.3s ease;
+    background-color: #2ecc71;
+    color: white;
+  }
+  .successBtn:hover{
+    opacity: 0.9;
+  }

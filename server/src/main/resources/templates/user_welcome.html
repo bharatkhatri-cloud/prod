@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; color: #333333; }
+        .card { max-width: 600px; background-color: #ffffff; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .header { background: linear-gradient(135deg, #0f766e, #115e59); padding: 30px; text-align: center; color: #ffffff; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 30px; line-height: 1.6; }
+        .footer { background-color: #f8fafc; padding: 20px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <h1>Welcome to Dharaksha Ecosolutions</h1>
+        </div>
+        <div class="content">
+            <p>Hello <strong>{{name}}</strong>,</p>
+            <p>Your account has been successfully created. You can now log in using your registered email: <strong>{{email}}</strong>.</p>
+            <p>Role assigned to you: <strong>{{role}}</strong></p>
+            <p>Thank you for joining our team of changemakers to pave the way for a greener and more sustainable tomorrow.</p>
+        </div>
+        <div class="footer">
+            &copy; 2026 Dharaksha Ecosolutions. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

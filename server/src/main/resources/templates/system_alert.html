@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; color: #333333; }
+        .card { max-width: 600px; background-color: #ffffff; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .header { background: linear-gradient(135deg, #dc2626, #b91c1c); padding: 30px; text-align: center; color: #ffffff; }
+        .header.warning { background: linear-gradient(135deg, #d97706, #b45309); }
+        .header.info { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 30px; line-height: 1.6; }
+        .footer { background-color: #f8fafc; padding: 20px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 9999px; font-size: 11px; font-weight: bold; text-transform: uppercase; color: #ffffff; margin-bottom: 15px; }
+        .badge.critical { background-color: #ef4444; }
+        .badge.warning { background-color: #f59e0b; }
+        .badge.info { background-color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header {{severityClass}}">
+            <h1>System Alert Notification</h1>
+        </div>
+        <div class="content">
+            <div class="badge {{severityClass}}">{{severity}}</div>
+            <p><strong>Alert Event:</strong> {{eventType}}</p>
+            <p><strong>Alert Details:</strong></p>
+            <p>{{alertMessage}}</p>
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+            <p style="font-size: 12px; color: #64748b;">Timestamp: {{timestamp}}</p>
+        </div>
+        <div class="footer">
+            &copy; 2026 Dharaksha Ecosolutions. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

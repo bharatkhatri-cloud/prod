@@ -1,0 +1,114 @@
+.lds-roller {
+    color: #03180f; /* Change color here */
+  }
+  
+  .lds-roller,
+  .lds-roller div,
+  .lds-roller div:after {
+    box-sizing: border-box;
+  }
+  
+  .lds-roller {
+    display: inline-block;
+    position: relative;
+    width: 40px; /* Reduced size */
+    height: 40px; /* Reduced size */
+  }
+  
+  .lds-roller div {
+    animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    transform-origin: 20px 20px; /* Adjusted to match new size */
+  }
+  
+  .lds-roller div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    width: 3.6px; /* Reduced size */
+    height: 3.6px; /* Reduced size */
+    border-radius: 50%;
+    background: currentColor;
+    margin: -1.8px 0 0 -1.8px; /* Adjusted to match new size */
+  }
+  
+  .lds-roller div:nth-child(1) {
+    animation-delay: -0.036s;
+  }
+  
+  .lds-roller div:nth-child(1):after {
+    top: 31.31371px; /* Adjusted to match new size */
+    left: 31.31371px; /* Adjusted to match new size */
+  }
+  
+  .lds-roller div:nth-child(2) {
+    animation-delay: -0.072s;
+  }
+  
+  .lds-roller div:nth-child(2):after {
+    top: 33.85641px; /* Adjusted to match new size */
+    left: 28px; /* Adjusted to match new size */
+  }
+  
+  .lds-roller div:nth-child(3) {
+    animation-delay: -0.108s;
+  }
+  
+  .lds-roller div:nth-child(3):after {
+    top: 35.45482px; /* Adjusted to match new size */
+    left: 24.1411px; /* Adjusted to match new size */
+  }
+  
+  .lds-roller div:nth-child(4) {
+    animation-delay: -0.144s;
+  }
+  
+  .lds-roller div:nth-child(4):after {
+    top: 36px; /* Adjusted to match new size */
+    left: 20px; /* Adjusted to match new size */
+  }
+  
+  .lds-roller div:nth-child(5) {
+    animation-delay: -0.18s;
+  }
+  
+  .lds-roller div:nth-child(5):after {
+    top: 35.45482px; /* Adjusted to match new size */
+    left: 15.8589px; /* Adjusted to match new size */
+  }
+  
+  .lds-roller div:nth-child(6) {
+    animation-delay: -0.216s;
+  }
+  
+  .lds-roller div:nth-child(6):after {
+    top: 33.85641px; /* Adjusted to match new size */
+    left: 12px; /* Adjusted to match new size */
+  }
+  
+  .lds-roller div:nth-child(7) {
+    animation-delay: -0.252s;
+  }
+  
+  .lds-roller div:nth-child(7):after {
+    top: 31.31371px; /* Adjusted to match new size */
+    left: 8.68629px; /* Adjusted to match new size */
+  }
+  
+  .lds-roller div:nth-child(8) {
+    animation-delay: -0.288s;
+  }
+  
+  .lds-roller div:nth-child(8):after {
+    top: 28px; /* Adjusted to match new size */
+    left: 6.14359px; /* Adjusted to match new size */
+  }
+  
+  @keyframes lds-roller {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
