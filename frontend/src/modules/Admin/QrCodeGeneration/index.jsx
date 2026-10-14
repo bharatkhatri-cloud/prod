@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import py from '../../../utils/qrCodeGen/main.py'
 
 const QrCodeGeneration = () => {
     // const [pref, setpref] = useState();
-    const navigate = useLocation()
+    const navigate = useNavigate();
     const [pdfBlob, setPdfBlob] = useState(null);
     const [generatedFileName, setgeneratedFileName] = useState(null);
     const [isGenerating, setIsGenerating] = useState(false); 

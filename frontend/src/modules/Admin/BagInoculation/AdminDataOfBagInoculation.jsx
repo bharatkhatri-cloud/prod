@@ -37,9 +37,9 @@ const AdminDataOfBagInoculation = ({ queryParams }) => {
   const [url, setUrl] = useState()
   const [moduleData, setModuleData] = useState({
     "bagId": "Bag ID",
-    "bagQty": "Bag Quantity(in ml)",
-    "JamOrLcId": "Jam/LC ID",
-    "JamOrLcQty": "Jam/LC Quantity(in ml.)",
+    "bagQty": "Bag Quantity",
+    "JamOrLcId": "LC ID",
+    "JamOrLcQty": "LC Quantity (in ml)",
   })
   const [inputModuleData, setInputModuleData] = useState({
     bagId: "",
@@ -81,8 +81,8 @@ const AdminDataOfBagInoculation = ({ queryParams }) => {
                     <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">S.No.</th>
                     <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Bag ID</th>
                     <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Bag Quantity</th>
-                    <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Jam/LC ID</th>
-                    <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Jam/LC Quantity</th>
+                    <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">LC ID</th>
+                    <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">LC Quantity (ml)</th>
                     <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Inoculated By</th>
                     <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Inoculation Time </th>
                     <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Remove</th>

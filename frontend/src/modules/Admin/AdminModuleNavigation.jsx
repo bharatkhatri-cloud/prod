@@ -18,31 +18,6 @@ function AdminNavigation() {
 
         <div className="flex flex-wrap p-4 justify-center">
 
-          <Link to={'/admin/jamPreparation'}>
-            <div className="border border-teal-200 p-6 rounded-lg ml-2 mb-2">
-              <div className="w-10 h-10 inline-flex items-center justify-center rounded-full bg-teal-100 text-teal-500 mb-4">
-               
-
-                <svg className="w-6 h-6" fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 490 490" space="preserve">
-                  <g>
-                    <g>
-                      <g>
-                        <rect x="195.3" width="99.1" height="35" />
-                        <rect x="213.1" y="54.8" width="63.7" height="25.3" />
-                        <path d="M308.7,155.4l-27.2-55.6h-73.1l-27.2,55.6c-12.4,26-19,54-19,82.4v234.7c0,9.7,36.9,17.5,82.8,17.5s82.8-7.8,82.8-17.5 V237.4C327.8,209.4,321.2,181.1,308.7,155.4z" />
-                      </g>
-                    </g>
-                  </g>
-                </svg>
-
-
-
-              </div>
-              <h2 className="text-lg text-teal-900 font-medium title-font mb-2">Jam Preparation</h2>
-              <p className="leading-relaxed text-base">LC is inoculated into the Jam Bottles.</p>
-            </div>
-          </Link>
-
           <Link to={'/admin/lcPreparation'}>
             <div className="border border-teal-200 p-6 rounded-lg ml-2 mb-2">
               <div className="w-10 h-10 inline-flex items-center justify-center rounded-full bg-teal-100 text-teal-500 mb-4">

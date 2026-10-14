@@ -205,10 +205,10 @@ const InoculateNewBag = () => {
                 />
             </div>
 
-            {/* JAM/LC ID */}
+            {/* LC ID */}
             <div className="mb-4">
                 <label htmlFor="JamOrLcId" className="block text-sm font-medium text-gray-700 mb-2">
-                    JAM/LC ID
+                    Liquid Culture (LC) ID
                 </label>
                 <input
                     type="text"
@@ -216,15 +216,15 @@ const InoculateNewBag = () => {
                     value={bagInoculationData.JamOrLcId}
                     onChange={e => handleInputDataOfBagInoculation('JamOrLcId', e.target.value)}
                     className="block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter Jam/LC ID"
+                    placeholder="Enter LC ID (e.g. LC000001)"
                     required
                 />
             </div>
 
-            {/* JAM/LC Quantity */}
+            {/* LC Quantity */}
             <div className="mb-6">
                 <label htmlFor="JamOrLcQty" className="block text-sm font-medium text-gray-700 mb-2">
-                    JAM/LC Quantity
+                    LC Inoculation Quantity (ml)
                 </label>
                 <input
                     type="number"
@@ -232,7 +232,7 @@ const InoculateNewBag = () => {
                     value={bagInoculationData.JamOrLcQty}
                     onChange={e => handleInputDataOfBagInoculation('JamOrLcQty', e.target.value)}
                     className="block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter Jam/LC Quantity"
+                    placeholder="Enter LC Quantity (in ml)"
                     required
                     min={0}
                 />

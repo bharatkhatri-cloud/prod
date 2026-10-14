@@ -81,8 +81,8 @@ function AdminDataOfBagStoreRoom({ queryParams }) {
                     <th className="px-6 py-6  text-sm font-medium text-gray-500 uppercase border">Bag Rejected By</th>
                     <th className="px-6 py-6  text-sm font-medium text-gray-500 uppercase border">REJECTION DATE</th>
                     <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Bag Qty.(in gm)</th>
-                    <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Lc/Jam Id</th>
-                    <th className="px-6 py-6  text-sm font-medium text-gray-500 uppercase border">Lc/Jam Qty.(ml)</th>
+                    <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">LC ID</th>
+                    <th className="px-6 py-6  text-sm font-medium text-gray-500 uppercase border">LC Qty.(ml)</th>
                     <th className="px-6 py-6  text-sm font-medium text-gray-500 uppercase border">Bag Placing Date(Bag incubation)</th>
                     <th className="px-6 py-6  text-sm font-medium text-gray-500 uppercase border">Remove</th>
                     <th className="px-6 py-6  text-sm font-medium text-gray-500 uppercase border">Update</th>

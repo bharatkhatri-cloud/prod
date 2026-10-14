@@ -4,9 +4,19 @@ const mongoose = require("mongoose");
 const mouldFillingSchema = new mongoose.Schema({
     bagId: {
         type: String,
-        required: true,
         trim: true
     },
+
+    mixId: {
+        type: String,
+        trim: true,
+        index: true
+    },
+
+    bagIds: [{
+        type: String,
+        trim: true
+    }],
 
     filledBy: {
         type: String,
@@ -42,7 +52,7 @@ const mouldFillingSchema = new mongoose.Schema({
     previousStatusTillBagInoculation: {
         type: mongoose.Schema.Types.ObjectId,
         ref:"BagInoculation",
-        required: true
+        required: false
     },
     isMouldRejected:{
         type:Boolean,

@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom";
 import AdminModuleNavigation from "./AdminModuleNavigation"
 import AdminNavbar from "./AdminNavbar"
 import ProfileCard from '../../assets/Profile'
-import AdminJamPreparation from "./JamPreparation/AdminJamPreparation";
 import AdminLcPreparation from "./LcPreparation/AdminLcPreparation";
 import AdminLcRejection from "./LcRejection/AdminLcRejection";
 import AdminBagInoculation from "./BagInoculation/AdminBagInoculation";
@@ -32,6 +31,7 @@ import AdminDeMouldingPieces from "./DeMouldingPieces/AdminDeMouldingPieces";
 import PageNotFound from "../../assets/PageNotFound";
 import QrCodeGeneration from "./QrCodeGeneration";
 import BagScanned from "./MouldFilling/BagScanned";
+import FillNewMould from "../MouldFilling/FillNewMould";
 import AccessUserInfo from "./User/AccessUserInfo";
 import AdminSettings from "./Settings/AdminSettings";
 
@@ -49,7 +49,6 @@ function Admin() {
 
 
         <Route path="/admin/dashboard" element={< Dashboard />} />
-        <Route path="/admin/jamPreparation" element={< AdminJamPreparation />} />
         <Route path="/admin/lcPreparation" element={< AdminLcPreparation />} />
         <Route path="/admin/lcRejection" element={< AdminLcRejection />} />
         <Route path="/admin/bagInoculation" element={<AdminBagInoculation />} />
@@ -57,6 +56,7 @@ function Admin() {
 
         <Route path="/admin">
           <Route path="mouldFilling" element={<AdminMouldFilling />} />
+          <Route path="fillNewMould" element={<FillNewMould />} />
           <Route path="scannedBag" element={<BagScanned />} />
           <Route path="typeOfMould" element={<AdminTypeOfMould />} />
         </Route>

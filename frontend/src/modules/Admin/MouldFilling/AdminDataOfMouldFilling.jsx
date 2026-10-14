@@ -88,7 +88,7 @@ const AdminDataOfMouldFilling = ({ queryParams }) => {
                                         <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Filled By</th>
                                         <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Bag ID</th>
                                         <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Bag Inoculation</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">LC/Jam ID</th>
+                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">LC Origin ID</th>
                                         <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Remove</th>
                                         <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Update</th>
                                     </tr>

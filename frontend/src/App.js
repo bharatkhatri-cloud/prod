@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import Login from "./assets/Login";
 import DashboardSkeleton from "./components/DashboardSkeleton.jsx";
 import Admin from "./modules/Admin/Admin";
-import NavigateInJamPreparation from "./modules/JamPreparation/NavigateInJamPreparation";
 import NavigateInLcPreparation from "./modules/LcPreparation/NavigateInLcPreparation";
 import NavigateInLcRejection from "./modules/LcRejection/NavigateInLcRejection";
 import NavigateInBagInoculation from "./modules/BagInoculation/NavigateInBagInoculation";
@@ -137,8 +136,6 @@ function App() {
     switch (userRole) {
       case "Admin":
         return <Admin />;
-      case "Supervisor (Jam Preparation)":
-        return <NavigateInJamPreparation />;
       case "Supervisor (LC Preparation)":
         return <NavigateInLcPreparation />;
       case "Supervisor (LC Rejection)":

@@ -42,6 +42,18 @@ const MouldTopBar = () => {
                             Type Of Mould
                         </NavLink>
                     </li>
+                    <li className="mr-3">
+                        <NavLink
+                            to="/admin/fillNewMould"
+                            className={({ isActive }) =>
+                                isActive
+                                    ? "inline-block border border-emerald-600 rounded py-1 px-3 bg-emerald-600 text-white font-bold"
+                                    : "inline-block border border-emerald-600 rounded hover:border-emerald-700 text-emerald-700 hover:bg-emerald-50 py-1 px-3 font-medium"
+                            }
+                        >
+                            + Fill Moulds (Mix & Bag)
+                        </NavLink>
+                    </li>
                 </ul>
             </div>
             <Outlet />

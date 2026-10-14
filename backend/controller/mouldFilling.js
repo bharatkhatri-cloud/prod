@@ -1,43 +1,74 @@
 const catchAsyncError = require("../middleware/catchAsyncError");
 const MouldFillingModel = require("../models/mouldFillingModel");
+const BagMixModel = require("../models/bagMixModel");
 const BagInoculationModel = require("../models/bagInoculationModel");
 const BagIncubationModel = require("../models/bagIncubationModel");
 const MouldIncubationModel = require("../models/mouldIncubationModel");
 const TypeOfMouldModel = require("../models/typeOfMouldModel");
 const ApiFeatures = require("../utils/Apifeatures");
 const Errorhandler = require("../utils/Errorhandler");
+const { expandSequentialRange } = require("../utils/rangeHelper");
 
 
 const mouldDataValidation = catchAsyncError(async (req, res, next) => {
     const filledMouldData = req.body;
-    let data = { ...filledMouldData }
+    let data = { ...filledMouldData };
 
     const newMouldIdSet = new Set();
     const duplicateMouldIdSet = new Set();
 
-    data.mould.forEach((currItem) => {
-        if (currItem.mouldId.trim() !== "") {
-            if (newMouldIdSet.has(currItem.mouldId.trim())) {
-                duplicateMouldIdSet.add(currItem.mouldId.trim())
-            } else {
-                newMouldIdSet.add(currItem.mouldId.trim())
-            }
+    // 1. Expand moulds from range if provided
+    if (data.mouldStartId && data.mouldEndId) {
+        try {
+            const rangeMoulds = expandSequentialRange(data.mouldStartId, data.mouldEndId);
+            rangeMoulds.forEach(id => newMouldIdSet.add(id));
+        } catch (err) {
+            return next(new Errorhandler(err.message, 400));
         }
-    })
+    }
 
-    if (!filledMouldData.bagId) {
-        return next(new Errorhandler(`Please fill "bag id"`, 400));
+    // 2. Add moulds from array
+    if (Array.isArray(data.mould)) {
+        data.mould.forEach((currItem) => {
+            const mouldId = (typeof currItem === 'object' ? currItem.mouldId : currItem)?.trim();
+            if (mouldId) {
+                if (newMouldIdSet.has(mouldId)) {
+                    duplicateMouldIdSet.add(mouldId);
+                } else {
+                    newMouldIdSet.add(mouldId);
+                }
+            }
+        });
+    }
+
+    // 3. Resolve bags / mix
+    let resolvedBagId = data.bagId ? data.bagId.trim() : null;
+    let resolvedMixId = data.mixId ? data.mixId.trim() : null;
+    let resolvedBagIds = [];
+
+    if (data.startBagId && data.endBagId) {
+        try {
+            resolvedBagIds = expandSequentialRange(data.startBagId, data.endBagId);
+        } catch (err) {
+            return next(new Errorhandler(err.message, 400));
+        }
+    } else if (Array.isArray(data.bagIds) && data.bagIds.length > 0) {
+        resolvedBagIds = data.bagIds.map(b => (typeof b === 'object' ? b.bagId : b).trim()).filter(Boolean);
+    }
+
+    if (!resolvedMixId && resolvedBagIds.length === 0 && !resolvedBagId) {
+        return next(new Errorhandler(`Please provide Bag ID(s) or select an active Mix ID`, 400));
     }
 
     if (!filledMouldData.filledBy) {
-        return next(new Errorhandler(`Please fill "filled by"`, 400));
+        filledMouldData.filledBy = req.user?.name || "Operator";
     }
     if (!filledMouldData.typeOfMould) {
         return next(new Errorhandler(`Please fill "type of mould"`, 400));
     }
 
-    if (newMouldIdSet.size == 0) {
-        return next(new Errorhandler(`Please fill at least one Mould ID`, 400));
+    if (newMouldIdSet.size === 0) {
+        return next(new Errorhandler(`Please fill at least one Mould ID or specify a valid Mould Range`, 400));
     }
 
     if (duplicateMouldIdSet.size > 0) {
@@ -52,80 +83,103 @@ const mouldDataValidation = catchAsyncError(async (req, res, next) => {
     }
 
     req.newMouldIdList = [...newMouldIdSet];
-    req.filledMouldData = filledMouldData;
+    req.filledMouldData = {
+        ...filledMouldData,
+        resolvedBagId,
+        resolvedMixId,
+        resolvedBagIds
+    };
     next();
-})
+});
 
 
 
 const filledNewMould = catchAsyncError(async (req, res, next) => {
     const newMouldIdList = req.newMouldIdList;
     const filledMouldData = req.filledMouldData;
-    const filledBy = req.user.name //
-    console.log("filledMouldData",filledMouldData);
-    
+    const filledBy = req.user?.name || filledMouldData.filledBy || "Operator";
 
+    let mixId = filledMouldData.resolvedMixId;
+    let bagIds = filledMouldData.resolvedBagIds || [];
+    let singleBagId = filledMouldData.resolvedBagId;
 
-    const isBagRejected = await BagIncubationModel.findOne({ bagId: filledMouldData.bagId });
-    if (isBagRejected) {
-        return next(new Errorhandler(`Bag ID "${isBagRejected.bagId}" is already Rejected in Bag Incubation department`, 404));
+    // If a mixId was provided, look it up
+    let mixDoc = null;
+    if (mixId) {
+        mixDoc = await BagMixModel.findOne({ mixId });
+        if (!mixDoc) {
+            return next(new Errorhandler(`Mix ID "${mixId}" not found.`, 404));
+        }
+        bagIds = mixDoc.bagIds || [];
+    } else if (bagIds.length > 1) {
+        // Auto-create a BagMix for this multi-bag mix
+        const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+        const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+        mixId = `MX-${todayStr}-${randomSuffix}`;
+        mixDoc = await BagMixModel.create({
+            mixId,
+            bagIds,
+            bagCount: bagIds.length,
+            mixedBy: filledBy,
+            mixDate: new Date(),
+            status: "ACTIVE",
+            totalMouldsFilled: 0,
+            notes: `Auto-generated mix for ${newMouldIdList.length} moulds`
+        });
+    } else if (bagIds.length === 1 && !singleBagId) {
+        singleBagId = bagIds[0];
     }
 
-   
-
-
-    const shouldExistInPreviousDB = await BagInoculationModel.findOne({ bagId: filledMouldData.bagId })
-
-    if (!shouldExistInPreviousDB) {
-
-        //! for de-link uncomment this 
-        const entryData = newMouldIdList.map((currItem) => {
-            return {
-                bagId: filledMouldData.bagId,
-                filledBy: filledMouldData.filledBy,
-                mouldId: currItem,
-                typeOfMould: filledMouldData.typeOfMould,
-                fillingId: filledBy, // Logged-in user ID
-                previousStatusTillBagInoculation: '67612d5180bd61aa82530cb0'
-            }
-        })
-
-        const newMould = await MouldFillingModel.insertMany(entryData);
-
-        res.status(201).json({
-            success: true,
-            message: `Mould filled successfully.`,
-            newMould
-        })
-
-        //! for link un-comment this 
-        // return next(new Errorhandler(`Bag ID "${filledMouldData.bagId}" not exist in previous data base`, 404));
-
-    }
-    else {
-
-        const entryData = newMouldIdList.map((currItem) => {
-            return {
-                bagId: filledMouldData.bagId,
-                filledBy: filledMouldData.filledBy,
-                mouldId: currItem,
-                typeOfMould: filledMouldData.typeOfMould,
-                fillingId: filledBy, // Logged-in user ID
-                previousStatusTillBagInoculation: shouldExistInPreviousDB._id.toString()
-            }
-        })
-
-        const newMould = await MouldFillingModel.insertMany(entryData);
-
-
-        res.status(201).json({
-            success: true,
-            message: `Mould filled successfully.`,
-            newMould
-        })
+    // Check rejection for bags
+    const allCheckedBags = singleBagId ? [singleBagId] : bagIds;
+    if (allCheckedBags.length > 0) {
+        const rejectedBags = await BagIncubationModel.find({ bagId: { $in: allCheckedBags } });
+        if (rejectedBags.length > 0) {
+            return next(new Errorhandler(`Cannot use rejected bags: ${rejectedBags.map(b => b.bagId).join(', ')}`, 400));
+        }
     }
 
-})
+    // Lookup previous status if single bag
+    let previousStatusId = '67612d5180bd61aa82530cb0';
+    if (singleBagId) {
+        const bagInoc = await BagInoculationModel.findOne({ bagId: singleBagId });
+        if (bagInoc) previousStatusId = bagInoc._id.toString();
+    } else if (bagIds.length > 0) {
+        const firstBagInoc = await BagInoculationModel.findOne({ bagId: bagIds[0] });
+        if (firstBagInoc) previousStatusId = firstBagInoc._id.toString();
+    }
+
+    const entryData = newMouldIdList.map((currItem) => {
+        return {
+            bagId: singleBagId || (bagIds.length === 1 ? bagIds[0] : null),
+            mixId: mixId || null,
+            bagIds: bagIds.length > 0 ? bagIds : (singleBagId ? [singleBagId] : []),
+            filledBy: filledBy,
+            mouldId: currItem,
+            typeOfMould: filledMouldData.typeOfMould,
+            fillingId: filledBy,
+            fillingDate: new Date(),
+            previousStatusTillBagInoculation: previousStatusId
+        };
+    });
+
+    const newMould = await MouldFillingModel.insertMany(entryData);
+
+    // If associated with a mix, increment count
+    if (mixDoc) {
+        mixDoc.totalMouldsFilled = (mixDoc.totalMouldsFilled || 0) + newMouldIdList.length;
+        await mixDoc.save();
+    }
+
+    res.status(201).json({
+        success: true,
+        message: `${newMouldIdList.length} mould(s) filled successfully${mixId ? ` under Mix "${mixId}"` : ""}.`,
+        mixId: mixId || null,
+        mouldCount: newMouldIdList.length,
+        bagCount: allCheckedBags.length,
+        newMould
+    });
+});
 
 
 const getMouldData = catchAsyncError(async (req, res) => {

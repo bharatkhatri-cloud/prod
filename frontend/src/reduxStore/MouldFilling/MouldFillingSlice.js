@@ -183,12 +183,85 @@ export const fetchToUpdateMouldFillingData = createAsyncThunk('mouldFilling/fetc
     }
 });
 
+// Thunk to create a new Bag Mix
+export const fetchCreateBagMix = createAsyncThunk('mouldFilling/fetchCreateBagMix', async (mixData) => {
+    try {
+        const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST || '';
+        const url = `${BACK_HOST}api/v1/bag-mix/create`;
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(mixData),
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            toast.error(errorData.message || "Failed to create bag mix");
+            throw new Error(errorData.message || "Failed to create bag mix");
+        }
+
+        const data = await response.json();
+        toast.success(data.message);
+        return data;
+    } catch (error) {
+        console.error("Error creating bag mix: ", error);
+        throw error;
+    }
+});
+
+// Thunk to fetch active Bag Mixes
+export const fetchActiveBagMixes = createAsyncThunk('mouldFilling/fetchActiveBagMixes', async () => {
+    try {
+        const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST || '';
+        const url = `${BACK_HOST}api/v1/bag-mix/active`;
+        const response = await fetch(url, {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch active bag mixes.");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching active bag mixes: ", error);
+        throw error;
+    }
+});
+
+// Thunk to fetch mould traceability
+export const fetchMouldTraceability = createAsyncThunk('mouldFilling/fetchMouldTraceability', async (mouldId) => {
+    try {
+        const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST || '';
+        const url = `${BACK_HOST}api/v1/mould-traceability/${encodeURIComponent(mouldId)}`;
+        const response = await fetch(url, {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch traceability.");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching traceability: ", error);
+        throw error;
+    }
+});
+
 const mouldFillingSlice = createSlice({
     name: "mouldFilling",
     initialState: {
         data: null,
         mouldsByBatch: [],
         batchInfo: null,
+        activeMixes: [],
+        traceabilityData: null,
         isLoading: false,
         isError: false,
     },
@@ -203,6 +276,14 @@ const mouldFillingSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            // Active Bag Mixes
+            .addCase(fetchActiveBagMixes.fulfilled, (state, action) => {
+                state.activeMixes = action.payload.activeMixes || [];
+            })
+            // Mould Traceability
+            .addCase(fetchMouldTraceability.fulfilled, (state, action) => {
+                state.traceabilityData = action.payload;
+            })
             // For new Mould Filling
             .addCase(fetchToCreateNewMouldFilling.pending, (state) => {
                 state.isLoading = true;

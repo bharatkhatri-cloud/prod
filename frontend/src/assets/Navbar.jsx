@@ -7,6 +7,7 @@ const Navbar = ({
     viewData,
     smfgData,
     fgData,
+    extraLinks = [],
     showData = true,
     bgNavClass = 'bg-emerald-600 border-b border-emerald-700 shadow-md',
     textBrandClass = 'text-white',
@@ -58,6 +59,16 @@ const Navbar = ({
                                     Home
                                 </NavLink>
                             </li>
+                            {extraLinks && extraLinks.map((link, idx) => (
+                                <li key={idx}>
+                                    <NavLink 
+                                        to={link.to} 
+                                        className={({ isActive }) => getLinkClass(isActive)}
+                                    >
+                                        {link.label}
+                                    </NavLink>
+                                </li>
+                            ))}
                             {showData && (
                                 <li>
                                     <NavLink 

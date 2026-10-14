@@ -53,6 +53,7 @@ const dashboardRouter = require("./routes/dashboardRoutes")
 const userRoutes = require('./routes/userRoutes')
 const { errorMiddleware } = require("./middleware/errorMiddleware")
 const growthChamberRoutes = require('./routes/growthChamberRoutes')
+const bagMixRouter = require("./routes/bagMixRoutes")
 
 
 const corsOptions = {
@@ -80,6 +81,7 @@ app.use("/api/v1", ovenOutRouter)
 app.use("/api/v1", dashboardRouter)
 app.use("/api/v1", userRoutes)
 app.use("/api/v1", growthChamberRoutes)
+app.use("/api/v1", bagMixRouter)
 
 // Stubs for /api/v2s routes
 const mockSettings = [

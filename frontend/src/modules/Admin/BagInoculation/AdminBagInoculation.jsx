@@ -19,8 +19,8 @@ const AdminBagInoculation = () => {
     const extraFilters = {
         "bagId": "Bag Id",
         "bagQty": "Bag Qty.",
-        "JamOrLcId": "Jam/Lc Id",
-        "JamOrLcQty": "Jam/Lc Qty.",
+        "JamOrLcId": "LC Id",
+        "JamOrLcQty": "LC Qty.",
         "inoculatedBy":"Bag Inoculated By"
     };
 
@@ -36,8 +36,8 @@ const AdminBagInoculation = () => {
     useEffect(() => {
         // Transform allData if it's an array
         const transformData =  allData.map(item => ({
-            "Jam/LC ID": item.JamOrLcId,
-            "Jam/LC Quantity(in ml.)": item.JamOrLcQty,
+            "LC ID": item.JamOrLcId,
+            "LC Quantity(in ml.)": item.JamOrLcQty,
             "Bag ID": item.bagId,
             "Bag Quantity": item.bagQty,
             "Bag Inoculated By": item.inoculatedBy,

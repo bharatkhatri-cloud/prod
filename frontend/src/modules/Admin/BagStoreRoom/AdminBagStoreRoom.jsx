@@ -39,8 +39,8 @@ const AdminBagStoreRoom = () => {
       "Reason Of Rejection": item.reasonOfRejection,
       "Bag Rejected By": item.bagRejectedBy,
       "Bag Quantity(in gm.)": item.previousStatusTillBagInoculation?.bagQty,
-      "LC/Jam ID": item.previousStatusTillBagInoculation?.JamOrLcId,
-      "LC/Jam Quantity(in ml.)": item.previousStatusTillBagInoculation?.JamOrLcQty,
+      "LC ID": item.previousStatusTillBagInoculation?.JamOrLcId,
+      "LC Quantity(in ml.)": item.previousStatusTillBagInoculation?.JamOrLcQty,
       "Bag Inoculation Time": FormatTime(item.previousStatusTillBagInoculation?.inoculationTimeStamp),
       "Bag Rejection Time": FormatTime(item.bagRejectionTime),
     }));

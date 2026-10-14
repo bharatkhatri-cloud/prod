@@ -45,34 +45,50 @@ const DataOfMouldFilling = () => {
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">S.No.</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Mould ID</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Bag ID</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Type Of Mould</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Filling Date</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Filled By</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">LC/Jam ID</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">S.No.</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">Mould ID</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">Source (Bag / Mix)</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">Type Of Mould</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">Filling Date</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">Filled By</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">LC/Jam Origin</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
                                     {state.isLoading &&
                                         <tr>
-                                            <td colSpan={'6'} className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center">
+                                            <td colSpan={'7'} className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center">
                                                 <Loader />
                                             </td>
                                         </tr>
                                     }
 
                                     {(Array.isArray(getAllDataFromCollection) ? getAllDataFromCollection : []).map((currData, index) => (
-                                        <tr className='hover:bg-teal-300' key={currData._id}>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{index + 1}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{currData.mouldId}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{currData.bagId}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{currData.typeOfMould}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{FormatTime(currData.fillingDate)}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{currData.filledBy}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{currData.previousStatusTillBagInoculation?.JamOrLcId}</td>
-
+                                        <tr className='hover:bg-teal-50 transition-colors' key={currData._id}>
+                                            <td className="px-6 py-3 whitespace-nowrap text-xs text-gray-700 border">{index + 1}</td>
+                                            <td className="px-6 py-3 whitespace-nowrap text-xs font-mono font-bold text-gray-900 border">{currData.mouldId}</td>
+                                            <td className="px-6 py-3 whitespace-nowrap text-xs border">
+                                                {currData.mixId ? (
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="bg-purple-100 text-purple-800 font-mono font-semibold px-2 py-0.5 rounded text-xs border border-purple-200">
+                                                            {currData.mixId}
+                                                        </span>
+                                                        {currData.bagIds && currData.bagIds.length > 0 && (
+                                                            <span className="text-[11px] text-gray-500">
+                                                                ({currData.bagIds.length} bags)
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <span className="font-mono text-gray-800">
+                                                        {currData.bagId || '-'}
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-3 whitespace-nowrap text-xs text-gray-800 border">{currData.typeOfMould}</td>
+                                            <td className="px-6 py-3 whitespace-nowrap text-xs text-gray-600 border">{FormatTime(currData.fillingDate)}</td>
+                                            <td className="px-6 py-3 whitespace-nowrap text-xs text-gray-700 border">{currData.filledBy}</td>
+                                            <td className="px-6 py-3 whitespace-nowrap text-xs text-gray-600 border">{currData.previousStatusTillBagInoculation?.JamOrLcId || '-'}</td>
                                         </tr>
                                     ))}
                                 </tbody>
