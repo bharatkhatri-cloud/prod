@@ -27,7 +27,6 @@ import { ToastContainer } from 'react-toastify';
 import { BrowserRouter, Route, Routes } from "react-router-dom"; // ✅ Import BrowserRouter
 import Login from './assets/Login';
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={rdxStore}>

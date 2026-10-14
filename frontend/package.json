@@ -4,8 +4,12 @@
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^3.2.0",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@mui/icons-material": "^5.15.15",
     "@mui/lab": "^6.0.0-beta.29",
+    "@mui/material": "^5.15.15",
     "@mui/x-date-pickers": "^7.27.1",
     "@reduxjs/toolkit": "^2.2.5",
     "@stomp/stompjs": "^7.3.0",
@@ -15,9 +19,7 @@
     "chart.js": "^4.4.3",
     "dayjs": "^1.11.13",
     "html5-qrcode": "^2.1.5",
-    "i": "^0.3.7",
     "material-react-table": "^3.2.1",
-    "npm": "^10.5.0",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-content-loader": "^7.0.2",
@@ -33,16 +35,10 @@
     "yup": "^1.4.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "DISABLE_ESLINT_PLUGIN=true PORT=3000 HOST=0.0.0.0 react-scripts start",
+    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [

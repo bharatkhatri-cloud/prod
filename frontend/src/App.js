@@ -65,7 +65,8 @@ function App() {
 
       const connectStomp = () => {
         // Find backend host and change "http" to "ws" protocol.
-        const backendHost = process.env.REACT_APP_BACKEND_PORT_AND_HOST || "http://localhost:8080/";
+        const rawHost = process.env.REACT_APP_BACKEND_PORT_AND_HOST;
+        const backendHost = (rawHost && rawHost.startsWith("http")) ? rawHost : (window.location.origin + "/");
         const wsHost = backendHost.replace(/^http/, "ws") + "ws/notifications";
 
         // Setup our STOMP protocol client.

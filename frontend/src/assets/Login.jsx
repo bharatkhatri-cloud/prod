@@ -27,13 +27,17 @@ const Login = ({ loggedIn, isLoggedIn }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await dispatch(fetchToLogin({ loginDetails: formData })).unwrap();
-      loggedIn(response.dhaDbTkn, response.user.role);
-      setLoading(false);
-      <Navigate to="/" /> // Redirect on successful login
+      const resultAction = await dispatch(fetchToLogin({ loginDetails: formData }));
+      if (fetchToLogin.fulfilled.match(resultAction)) {
+        const response = resultAction.payload;
+        if (response && response.user && response.user.role) {
+          loggedIn(response.dhaDbTkn, response.user.role);
+        } else {
+          console.warn("Login succeeded but user role is missing:", response);
+        }
+      }
     } catch (error) {
       console.error("Error in login", error);
-      setLoading(false);
     } finally {
       setLoading(false);
     }

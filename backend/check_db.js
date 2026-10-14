@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
-const dbUrl = 'mongodb+srv://serverTeam:Ankit%404202@dharakshadb.rodoa.mongodb.net/dharaksha?retryWrites=true&w=majority&appName=dharakshaDB';
+let dbUrl = process.env.DB_URL || 'mongodb+srv://serverTeam:KUyvLTDCKt0wrjer@dharakshadb.rodoa.mongodb.net/dharaksha?authSource=admin&retryWrites=true&w=majority&appName=dharakshaDB';
+if (dbUrl.includes("Ankit%404202")) {
+    dbUrl = dbUrl.replace("Ankit%404202", "KUyvLTDCKt0wrjer");
+}
+if (!dbUrl.includes("authSource=")) {
+    dbUrl = dbUrl.includes("?") ? dbUrl.replace("?", "?authSource=admin&") : dbUrl + "?authSource=admin";
+}
 
 async function run() {
   try {

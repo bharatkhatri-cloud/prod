@@ -112,10 +112,10 @@ export const fetchToGetLoggedInUserDetails = createAsyncThunk('userAuth/fetchToG
 
 
 // Thunk for fetching login api
-export const fetchToLogin = createAsyncThunk('userAuth/fetchToLogin', async ({loginDetails} ) => {
+export const fetchToLogin = createAsyncThunk('userAuth/fetchToLogin', async ({loginDetails}, { rejectWithValue }) => {
   try {
     //   const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST_URL;
-    const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST;
+    const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST || '';
     const url = `${BACK_HOST}api/v1/login`;
     const response = await fetch(url, {
       method: "POST",
@@ -125,19 +125,19 @@ export const fetchToLogin = createAsyncThunk('userAuth/fetchToLogin', async ({lo
       body: JSON.stringify(loginDetails),
       credentials: 'include'
     })
-    if (!response.ok) {
-      const errorData = await response.json();
-      toast.error(errorData.message);
-      return errorData
+    const data = await response.json();
+    if (!response.ok || !data.success) {
+      toast.error(data.message || "Failed to login");
+      return rejectWithValue(data);
     }
 
-    const data = await response.json();
     toast.success(data.message)
     return data
   } catch (error) {
-    toast.error("Failed to login! try again latter");
+    const errorMsg = error?.message || "Failed to login! try again latter";
+    toast.error(errorMsg);
     console.error("Your are not login, Please login to access your profile:-", error);
-    throw error;
+    return rejectWithValue({ message: errorMsg, success: false });
   }
 })
 
@@ -229,9 +229,10 @@ export const userAuthSlice = createSlice({
       state.isLoading = true;
     }).addCase(fetchToLogin.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.isUserLoggedIn = action.payload.dbToken;
-      // console.log("action.payloadLogin time", action.payload.dbToken);
+      state.isUserLoggedIn = !!(action.payload?.dhaDbTkn || action.payload?.dbToken);
+      state.user = action.payload;
     }).addCase(fetchToLogin.rejected, (state, action) => {
+      state.isLoading = false;
       console.log("Error", action.payload);
       state.isError = true;
     });

@@ -8,28 +8,33 @@ const timerHandler = (io, socket) => {
 
     // ✅ Check if a timer exists for the humidifier
     socket.on("checkTimer", async (data) => {
-        const timer = await Timer.findOne({ dataId: data.humidiferSerialNo }); // this is the model for the timer data is finding from the timer model
-
-
-        if (timer) {
-            const targetTime = new Date(timer.expiresAt).getTime(); // expire time get from the database
-            sendTimer(io, targetTime, data);  // ✅ io used here
+        try {
+            const timer = await Timer.findOne({ dataId: data.humidiferSerialNo });
+            if (timer) {
+                const targetTime = new Date(timer.expiresAt).getTime();
+                sendTimer(io, targetTime, data);
+            }
+        } catch (err) {
+            console.warn("Socket checkTimer DB offline:", err.message);
         }
     });
 
     // ✅ Start a timer and broadcast to all
-    socket.on("startTimer", async ({ data, submittedAt }) => { // start from the frontend triger  
+    socket.on("startTimer", async ({ data, submittedAt }) => {
         const targetTime = new Date(submittedAt).getTime() + 1 * 60 * 1000; // 1 minute
 
-        //timer model database updated and the set the sumited time the the expire time
-        await Timer.findOneAndUpdate(
-            { dataId: data.humidiferSerialNo },
-            {
-                submittedAt, 
-                expiresAt: new Date(targetTime),
-            },
-            { upsert: true, new: true }
-        );
+        try {
+            await Timer.findOneAndUpdate(
+                { dataId: data.humidiferSerialNo },
+                {
+                    submittedAt, 
+                    expiresAt: new Date(targetTime),
+                },
+                { upsert: true, new: true }
+            );
+        } catch (err) {
+            console.warn("Socket startTimer DB offline:", err.message);
+        }
  
         // after then call the sentimer function 
         sendTimer(io, targetTime, data);  // ✅ io used here 

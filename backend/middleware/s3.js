@@ -11,8 +11,8 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-const upload = multer({
-    storage: multerS3({
+const storage = process.env.AWS_BUCKET_NAME
+    ? multerS3({
         s3: s3,
         bucket: process.env.AWS_BUCKET_NAME,  
         acl: 'public-read',
@@ -24,6 +24,10 @@ const upload = multer({
         },
         limits: { fileSize: '50mb' }
     })
+    : multer.memoryStorage();
+
+const upload = multer({
+    storage: storage
 });
 
 module.exports = upload;

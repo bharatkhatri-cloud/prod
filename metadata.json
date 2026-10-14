@@ -1,0 +1,7 @@
+{
+  "name": "Dharaksha",
+  "description": "This portal is for the Dharaksha sustainable packaging solutions.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
