@@ -1,36 +1,33 @@
-# Running Dharaksha Portal with Docker
+# Running Dharaksha Portal with Docker (Port 3002)
 
-This guide explains how to start the Dharaksha manufacturing portal on your local PC using Docker on port **3002**.
-
----
-
-## Prerequisites
-
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows / macOS) or Docker Engine + Docker Compose Plugin (Linux).
-- Ensure Docker is running on your machine.
+This setup runs the entire Dharaksha manufacturing portal inside Docker on host port **3002**, connecting to your cloud MongoDB database with zero local dependency conflicts.
 
 ---
 
-## Quick Start (1 Command)
+## Quick Start on Windows
 
-1. **Verify your `.env` file**:
-   Ensure you have a `.env` file in the project root containing your cloud MongoDB connection string:
-   ```env
-   DB_URL=mongodb+srv://...
-   JWT_SECRET=your_jwt_secret
-   AES_SECRET=dharaksha_hashing-123
-   ```
-   *(A pre-configured `.env` is already present in this project).*
+### Option 1: Double-Click (Easiest)
+Simply double-click the **`start.bat`** file in your project folder. It will automatically initialize any missing config files and launch the Docker container.
 
-2. **Start the application**:
-   Open a terminal in the project root directory and run:
-   ```bash
-   docker compose up --build -d
-   ```
+### Option 2: Windows PowerShell
+Open PowerShell in the project directory and run:
+```powershell
+.\start.ps1
+```
 
-3. **Open the portal in your browser**:
-   Navigate to:
-   👉 **`http://localhost:3002`**
+### Option 3: Standard Docker Command
+In any terminal (PowerShell, Command Prompt, or Linux bash):
+```bash
+docker compose up --build -d
+```
+> **Note**: Even if `.env` is absent on your PC, `docker-compose.yml` has embedded default environment variables and connects directly to your cloud MongoDB cluster out-of-the-box.
+
+---
+
+## Access the Application
+
+Once started, open your web browser to:
+👉 **`http://localhost:3002`**
 
 ---
 
@@ -40,14 +37,13 @@ This guide explains how to start the Dharaksha manufacturing portal on your loca
 |---|---|
 | **View live logs** | `docker compose logs -f` |
 | **Check container status** | `docker compose ps` |
-| **Stop the application** | `docker compose down` |
+| **Stop container** | `docker compose down` |
 | **Restart container** | `docker compose restart` |
-| **Rebuild after code changes** | `docker compose up --build -d` |
+| **Rebuild after updates** | `docker compose up --build -d` |
 
 ---
 
-## Port Configuration Explanation
+## Why Port 3002?
 
-- **Host Port**: `3002` (on your computer, avoiding conflicts with any service on port 3000).
-- **Container Port**: `3000` (internal port used by the Express backend).
-- The mapping in `docker-compose.yml` (`"3002:3000"`) directs traffic from `http://localhost:3002` on your machine into the container's production server.
+- Your PC has port `3000` allocated to another service.
+- The `docker-compose.yml` configuration maps **`3002:3000`**, routing external traffic from your browser (`http://localhost:3002`) into the container's internal Express server port (`3000`).

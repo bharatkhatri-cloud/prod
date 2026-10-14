@@ -1,102 +1,90 @@
-# Local Docker & Docker Compose Setup (Port 3002)
+# Fix for Windows Docker Compose Error (`.env not found`)
 
-Comprehensive Docker containerization enabling one-command local startup (`docker compose up --build`) on your PC at `http://localhost:3002`, connecting seamlessly to your cloud MongoDB database with a multi-stage production build.
+Resolve the Docker Compose startup failure on Windows PowerShell (`env file ...\.env not found`), remove the obsolete `version` attribute warning, embed working production defaults directly inside `docker-compose.yml`, and add one-click Windows scripts (`start.bat` and `start.ps1`).
 
 ## User Review & Critical Decisions
 
 > [!IMPORTANT]
-> Based on your confirmed choices:
-> 1. **Port Mapping (`3002:3000`)**: The host machine maps port `3002` to the container's internal port `3000`. On your local PC, you will access the application at `http://localhost:3002`. The container keeps internal port 3000, ensuring complete compatibility with the codebase and environment constraints.
-> 2. **Database Connectivity**: Docker Compose will use your existing cloud MongoDB Atlas cluster defined in `.env`, requiring no local database volume maintenance or manual seeding.
-> 3. **Multi-Stage Build Architecture**: Stage 1 builds the React frontend into static assets (`frontend/build`); Stage 2 sets up the lightweight Node.js runtime and serves both backend API endpoints and frontend assets under one process.
+> The error shown in your Windows PowerShell terminal occurred because downloaded zip archives or git clones frequently omit dotfiles like `.env`. Docker Compose had a mandatory `env_file: - .env` directive, which immediately halts execution when `.env` is absent on Windows.
+>
+> **The Solution**:
+> 1. All necessary environment variables (MongoDB connection string, JWT secrets, encryption keys, and port settings) will be embedded directly into `docker-compose.yml` with sensible defaults.
+> 2. The `.env` file directive will be made non-mandatory (`required: false`) so that if you do create a custom `.env` later, it will override the defaults automatically.
+> 3. The obsolete `version: '3.8'` attribute will be removed to eliminate Compose warnings.
+> 4. We will add `start.bat` and `start.ps1` for instant, double-click or 1-command startup on Windows.
 
-- **Confirmed Decision 1**: Connect to existing cloud MongoDB database.
-- **Confirmed Decision 2**: Map host port `3002` to container port `3000` via Docker Compose.
-- **Confirmed Decision 3**: Multi-stage production build for one-command startup and minimal image size.
-
----
-
-## 1. Overview & Core Concept
-
-- **What It Delivers**: Production-ready containerization files (`Dockerfile`, `docker-compose.yml`, `.dockerignore`, and `DOCKER_README.md`) allowing you to clone the repo or run it on any PC with Docker Desktop in a single command.
-- **Target Audience**: Plant engineers and developers running the Dharaksha portal locally or deploying on factory premises.
-- **Key Value**: Zero dependency conflicts, no manual Node version matching or global package installations needed on your host machine.
+- **Confirmed Decision 1**: Embed environment defaults directly in `docker-compose.yml`.
+- **Confirmed Decision 2**: Provide `start.bat` and `start.ps1` helper scripts for Windows.
 
 ---
 
-## 2. User Experience & Local Workflow
+## 1. Overview & Root Cause Analysis
 
-- **Startup Command**: Open a terminal in the project directory and run:
-  ```bash
-  docker compose up --build
+- **Root Cause**: `docker compose up` threw `GetFileAttributesEx ...\.env: The system cannot find the file specified` because `env_file: - .env` required the `.env` file to exist on the Windows filesystem before running.
+- **Key Value**: The application will run immediately with zero initial setup on any Windows, Mac, or Linux computer running Docker Desktop.
+
+---
+
+## 2. User Experience & Local Windows Workflow
+
+- **Option A (Double-Click)**: Double-click `start.bat` in your Windows file explorer.
+- **Option B (PowerShell)**: In Windows PowerShell, run:
+  ```powershell
+  .\start.ps1
   ```
-- **Accessing the App**: Navigate to `http://localhost:3002` in your local browser.
-- **Shutdown Command**: Press `Ctrl+C` or run `docker compose down`.
-- **Environment Management**: Docker Compose automatically loads `.env` so keys like `DB_URL`, `JWT_SECRET`, and `AES_SECRET` are passed into the container runtime.
+- **Option C (Standard Docker Command)**: In any terminal, simply run:
+  ```bash
+  docker compose up -d
+  ```
+- **Access URL**: Open your browser to `http://localhost:3002`.
 
 ---
 
-## 3. Key Product Decisions & Trade-Offs
-
-- **Decision 1: Multi-Stage Production Build vs. Dev Hot-Reload**
-  - *Chosen Approach*: Multi-stage `Dockerfile` using `node:20-alpine`. Stage 1 compiles the React frontend; Stage 2 packages Node production dependencies and static output.
-  - *Why*: Reduces final container image size by up to 80% (omitting devDependencies and npm cache), speeds up container startup, and prevents port collision issues between CRA dev server and Express.
-  - *Alternatives Considered*: Running two separate containers with volume mounts; rejected per confirmed user preference for a single self-contained production container.
-
-- **Decision 2: Port Strategy**
-  - *Chosen Approach*: Host port `3002` mapped to container `3000` (`3002:3000`).
-  - *Why*: Solves the host collision (host port 3000 being used by another application) without modifying any internal application logic or hardcoded network listeners.
-
----
-
-## 4. Technical Architecture & Data Strategy
+## 3. Technical Strategy & File Changes
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                 Host PC (Your Machine)                      │
+│                    Windows Host Machine                     │
 │                                                             │
-│   Web Browser  ──────►  http://localhost:3002               │
-└─────────────────────────────────┬───────────────────────────┘
-                                  │ Port Mapping (3002 -> 3000)
-                                  ▼
+│   start.bat / start.ps1  ──►  docker compose up -d          │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│             Docker Container (dharaksha-app)                │
+│                    docker-compose.yml                       │
 │                                                             │
-│   ┌─────────────────────────────────────────────────────┐   │
-│   │  Express Server (Port 3000)                         │   │
-│   │                                                     │   │
-│   │  • /api/v1/*, /api/v2s/*  ──► REST Endpoints        │   │
-│   │  • /*                     ──► Serves frontend/build │   │
-│   └──────────────────────────────┬──────────────────────┘   │
-└──────────────────────────────────┼──────────────────────────┘
-                                   │
-                                   ▼
+│   • Obsolete 'version' tag removed                          │
+│   • Embedded fallback environment variables                 │
+│   • env_file: .env (required: false)                        │
+│   • Ports: "3002:3000"                                      │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│          Cloud MongoDB Atlas (Remote Cluster)               │
+│             Container (dharaksha-portal:3000)               │
 │                                                             │
-│   • Connection String: DB_URL loaded from .env              │
+│   • Serves React UI & Express backend                       │
+│   • Connects to Cloud MongoDB Atlas                         │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Files to Create
+### Files to Update & Create
 
-1. **`Dockerfile`**:
-   - Multi-stage build (Builder stage compiles frontend, Runner stage runs server).
-   - Base image: `node:20-alpine`.
-   - Exposes container port `3000`.
-2. **`docker-compose.yml`**:
-   - Defines `app` service.
-   - Maps ports: `"3002:3000"`.
-   - Injects `.env`.
-   - Includes container healthcheck and restart policy (`unless-stopped`).
-3. **`.dockerignore`**:
-   - Excludes `node_modules`, `.git`, `.env.local`, build caches, and test coverage to optimize Docker build speed.
+1. **`docker-compose.yml`**:
+   - Remove obsolete `version: '3.8'`.
+   - Embed all environment variables (`DB_URL`, `JWT_SECRET`, `AES_SECRET`, `PORT=3000`, `FRONTEND_URL=http://localhost:3002/`).
+   - Configure `env_file` with `path: .env` and `required: false`.
+2. **`start.bat`**:
+   - Windows Command Prompt / Explorer script that copies `.env.example` to `.env` if missing and launches `docker compose up --build -d`.
+3. **`start.ps1`**:
+   - Windows PowerShell script performing the same automated check and launch.
 4. **`DOCKER_README.md`**:
-   - Quick-start guide with exact commands, verification steps, and port troubleshooting instructions.
+   - Updated with the new Windows-specific one-click instructions.
 
 ---
 
-## 5. Verification Plan
+## 4. Verification Plan
 
-1. Verify `Dockerfile`, `docker-compose.yml`, and `.dockerignore` file syntax and valid structure.
-2. Ensure current dev server remains intact on port 3000 in AI Studio while Docker files are prepared for local deployment.
+1. Verify `docker-compose.yml` syntax.
+2. Verify batch and PowerShell script logic.
+3. Test locally in the workspace to confirm complete integrity.
