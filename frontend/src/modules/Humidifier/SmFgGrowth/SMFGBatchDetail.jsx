@@ -85,9 +85,9 @@ const SMFGBatchDetail = () => {
 
     const { batchInfo, moulds } = batchDetails;
 
-    const filteredMoulds = moulds?.filter(mould =>
-        mould.typeOfMould?.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
+    const filteredMoulds = (Array.isArray(moulds) ? moulds : []).filter(mould =>
+        mould?.typeOfMould?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const totalFiltered = filteredMoulds.length;
     const indexOfLastMould = queryParams.page * queryParams.resultPerPage;

@@ -20,8 +20,8 @@ const SMFGChambersGrid = () => {
         }
     }, [humidifiers]);
 
-    const searchHumidifier = allDataFromCollection?.filter((currHum) =>
-        currHum.department === 'SMFG' && currHum.serialNo.toLowerCase().includes(searchQuery.toLowerCase())
+    const searchHumidifier = (Array.isArray(allDataFromCollection) ? allDataFromCollection : []).filter((currHum) =>
+        currHum?.department === 'SMFG' && (currHum?.serialNo || "").toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const getStatusBadge = (h) => {

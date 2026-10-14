@@ -39,10 +39,13 @@ const NotificationsCenter = ({ dashboardPath = "/" }) => {
   }, [dispatch, activeTab, selectedCategory, limit]);
 
   // Handle search by matching search keywords.
-  const filteredNotifications = notifications.filter((notif) => {
+  const notifList = Array.isArray(notifications) ? notifications : [];
+  const filteredNotifications = notifList.filter((notif) => {
+    const title = notif?.title || "";
+    const message = notif?.message || "";
     const matchesSearch =
-      notif.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      notif.message.toLowerCase().includes(searchTerm.toLowerCase());
+      title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      message.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
 

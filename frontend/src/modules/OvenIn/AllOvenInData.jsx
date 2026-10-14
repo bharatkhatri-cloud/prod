@@ -22,11 +22,12 @@ const AllOvenInData = () => {
         }
     }, [ovenInState.data]);
 
+    const safeOven = Array.isArray(oven) ? oven : [];
     const filteredOvens = selectOven
-        ? oven.filter((item) => item.ovenSerialNo === selectOven)
-        : oven;
+        ? safeOven.filter((item) => item?.ovenSerialNo === selectOven)
+        : safeOven;
 
-    const uniqueOvens = [...new Set(oven.map((o) => o.ovenSerialNo))];
+    const uniqueOvens = [...new Set(safeOven.map((o) => o?.ovenSerialNo).filter(Boolean))];
 
     return (
         <div className="min-h-screen bg-gray-50 p-6 sm:p-8">

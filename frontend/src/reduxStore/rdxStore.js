@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import jamPreparationReducer from "./JamPreparation/JamPreparationSlice";
 import lcPreparationReducer from "./LcPreparation/LcPreparationSlice";
 import lcRejectionReducer from "./LcRejection/LcRejectionSlice";
 import bagInoculationReducer from "./BagInoculation/BagInoculationSlice";
@@ -25,7 +24,6 @@ import notificationsReducer from "./Notifications/NotificationsSlice";
 
 export const rdxStore = configureStore({
     reducer: {
-        jamPreparationReducer: jamPreparationReducer,
         lcPreparationReducer: lcPreparationReducer,
         lcRejectionReducer: lcRejectionReducer,
         bagInoculationReducer: bagInoculationReducer,

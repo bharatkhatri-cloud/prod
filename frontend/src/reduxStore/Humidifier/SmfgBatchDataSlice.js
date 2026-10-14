@@ -39,7 +39,7 @@ const smfgBatchDataSlice = createSlice({
             })
             .addCase(fetchSmfgBatchData.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.data = action.payload;
+                state.data = Array.isArray(action.payload) ? action.payload : [];
             })
             .addCase(fetchSmfgBatchData.rejected, (state) => {
                 state.isLoading = false;

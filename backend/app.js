@@ -39,7 +39,6 @@ process.env.EMAIL_JWT_SECRET = process.env.EMAIL_JWT_SECRET || "emajilaskjsdfksf
 const cookieParser = require("cookie-parser")
 const lcPreparationRouter = require("./routes/lcPreparationRoutes")
 const lcRejectionRouter = require("./routes/lcRejectionRoutes")
-const jamPreparationRouter = require("./routes/jamPreparationRoutes")
 const bagInoculationRouter = require("./routes/bagInoculationRoutes")
 const bagIncubationRouter = require("./routes/bagIncubationRoutes")
 const mouldFillingRouter = require("./routes/mouldFillingRoutes")
@@ -68,7 +67,6 @@ app.use(cookieParser());
 
 app.use("/api/v1", lcPreparationRouter)
 app.use("/api/v1", lcRejectionRouter)
-app.use("/api/v1", jamPreparationRouter)
 app.use("/api/v1", bagInoculationRouter)
 app.use("/api/v1", bagIncubationRouter)
 app.use("/api/v1", mouldFillingRouter)
@@ -121,8 +119,24 @@ app.put("/api/v2s/settings/:settingKey", (req, res) => {
     }
     res.json({ settingKey: req.params.settingKey, label: req.params.settingKey, enabled: !!req.body?.enabled });
 });
+app.get("/api/v2s/batch/all-batches", (req, res) => {
+    res.json([]);
+});
+app.get("/api/v2s/batch/get-readings", (req, res) => {
+    res.json([]);
+});
+app.get("/api/v2s/smfg/all-batches", (req, res) => {
+    res.json([]);
+});
+app.get("/api/v2s/smfg/get-readings", (req, res) => {
+    res.json([]);
+});
 app.all("/api/v2s/*", (req, res) => {
     if (req.method === "GET") {
+        const path = req.path.toLowerCase();
+        if (path.includes("batch") || path.includes("list") || path.includes("all") || path.includes("reading") || path.endsWith("s")) {
+            return res.json([]);
+        }
         return res.json({});
     }
     res.status(501).json({ error: "Not yet migrated", message: "Not yet migrated" });

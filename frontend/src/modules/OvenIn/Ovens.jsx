@@ -22,8 +22,8 @@ const Ovens = () => {
         }
     }, [allOvens]);
 
-    const searchedOven = allDataFromCollection?.filter((currHum) =>
-        currHum.serialNo.toLowerCase().includes(searchQuery.toLowerCase())
+    const searchedOven = (Array.isArray(allDataFromCollection) ? allDataFromCollection : []).filter((currHum) =>
+        (currHum?.serialNo || "").toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (

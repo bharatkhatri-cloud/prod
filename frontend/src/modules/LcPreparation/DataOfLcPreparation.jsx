@@ -19,7 +19,7 @@ const DataOfLcPreparation = () => {
     useEffect(() => {
         if (state && state.data && state.data.dataOfAllPreparedLc) {
             setGetAllDataOfPrepareLc(state.data.dataOfAllPreparedLc)
-            setTotalNumberOfData(state.data.totalDataOfJamPreparation)
+            setTotalNumberOfData(state.data.totalLcPreparationData || state.data.totalNoOfDataFiltered || 0)
             setResultPerPage(state.data.resultPerPage)
 
         }

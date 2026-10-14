@@ -5,7 +5,8 @@ import { toggleReadApi, markAllReadApi, deleteNotificationApi } from "../../redu
 
 const Navbar = () => {
     const dispatch = useDispatch();
-    const notifications = useSelector((state) => state.notificationsReducer.list);
+    const rawNotifications = useSelector((state) => state.notificationsReducer?.list);
+    const notifications = Array.isArray(rawNotifications) ? rawNotifications : [];
     const unreadCount = notifications.filter(n => !n.isRead).length;
 
     const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(false);

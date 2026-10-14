@@ -20,8 +20,8 @@ const Humidifier = () => {
         }
     }, [humidifiers]);
 
-    const searchHumidifier = allDataFromCollection?.filter((currHum) => 
-        currHum.serialNo.toLowerCase().includes(searchQuery.toLowerCase())
+    const searchHumidifier = (Array.isArray(allDataFromCollection) ? allDataFromCollection : []).filter((currHum) => 
+        (currHum?.serialNo || "").toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const getStatusBadge = (h) => {

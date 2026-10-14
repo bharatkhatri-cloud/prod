@@ -7,7 +7,7 @@ const middlewareForOvenOutFg = catchAsyncError(async (req, res, next) => {
     const filledData = req.body;
     const enteredData = {
         outTime: new Date(),
-        outBy: "Ankit Developer",
+        outBy: req.user?.name || "Dharaksha Team",
         quality: filledData.quality,
         fgId: filledData.fgId
     }

@@ -105,7 +105,7 @@ exports.deleteTheDataOfPreparedLc = catchAsyncError(async (req, res, next) => {
 exports.updateTheDataOfPreparedLc = catchAsyncError(async (req, res, next) => {
     const dataOfPreparedLc = await LcPreparationModel.findById(req.params.id)
     if (!dataOfPreparedLc) {
-        return next(new Errorhandler("For this MongoDB Id Data Of Prepared Jam Is Not Found", 404));
+        return next(new Errorhandler("For this MongoDB Id Data Of Prepared LC Is Not Found", 404));
     }
     const enteredData = req.body;
     // const updatedDataOfLcPreparation = await LcPreparationModel.findByIdAndUpdate(req.params.id, { ...enteredData, lcPreparationTime: Date.now(), updatedAt: Date.now() }, { new: true })

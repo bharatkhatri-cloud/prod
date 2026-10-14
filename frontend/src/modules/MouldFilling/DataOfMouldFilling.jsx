@@ -51,7 +51,7 @@ const DataOfMouldFilling = () => {
                                         <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">Type Of Mould</th>
                                         <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">Filling Date</th>
                                         <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">Filled By</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">LC/Jam Origin</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase border">LC Origin</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">

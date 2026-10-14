@@ -1,4 +1,3 @@
-const JamPreparationModel = require("../models/jamPreparationModel");
 const LcPreparationModel = require("../models/lcPreparationModel");
 const LcRejectionModel = require("../models/lcRejectionModel");
 const BagInoculationModel = require("../models/bagInoculationModel");
@@ -15,11 +14,6 @@ const HumidifierDataModel = require("../models/humidiferDataModel");
 
 exports.getDataOfAllModules = catchAsyncError(async (req, res) => {
   const resultPerPage = Number.MAX_SAFE_INTEGER;
-
-
-  // console.log("req.quer : ", req.query)
-  const apiFeaturesForJamPreparation = new ApiFeatures(JamPreparationModel.find(), req.query).filter("jamPreparationTime").sort("jamPreparationTime").pagination(resultPerPage);
-  const dataOfAllPreparedJam = await apiFeaturesForJamPreparation.query;
 
 
   const apiFeaturesForLcPreparation = new ApiFeatures(LcPreparationModel.find(), req.query).filter("lcPreparationTime").sort("lcPreparationTime").pagination(resultPerPage);
@@ -72,9 +66,6 @@ exports.getDataOfAllModules = catchAsyncError(async (req, res) => {
   res.status(200).json({
     message: `Data Of All Modules`,
     allModuleData: {
-      // ? Jam
-      totalCountDataOfPreparedJam: dataOfAllPreparedJam.length,
-      
       // ? LC
       totalCountDataOfPreparedLc: dataOfAllPreparedLc.length,
       totalCountDataOfRejectedLc: dataOfAllRejectedLc.length,

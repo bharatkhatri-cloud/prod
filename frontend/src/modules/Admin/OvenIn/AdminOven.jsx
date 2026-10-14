@@ -47,7 +47,7 @@ const AdminOven = () => {
     }
   }
 
-  const searchOven = getAllDataFromCollection?.filter((currHum) => currHum.serialNo.includes(searchQuery))
+  const searchOven = (Array.isArray(getAllDataFromCollection) ? getAllDataFromCollection : []).filter((currHum) => currHum?.serialNo?.includes(searchQuery));
 
   return (
     <>

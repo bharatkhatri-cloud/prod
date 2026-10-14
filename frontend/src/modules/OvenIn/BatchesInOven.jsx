@@ -70,9 +70,9 @@ const BatchesInOven = () => {
     }
   };
 
-  const batchesList = batches || [];
+  const batchesList = Array.isArray(batches) ? batches : [];
   const filteredBatches = batchesList.filter((b) =>
-    b.batchId.toLowerCase().includes(searchQuery.toLowerCase())
+    (b?.batchId || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (

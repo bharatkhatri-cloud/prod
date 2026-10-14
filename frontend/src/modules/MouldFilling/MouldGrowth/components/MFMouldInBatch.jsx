@@ -23,10 +23,10 @@ const MFDataInBatch = ({ dataId, humidifier, refreshKey, readOnly = false, onCou
 
     const [searchQuery, setSearchQuery] = useState('');
 
-    const filteredData = mouldsByBatch?.filter(item =>
-        (item.mouldId && item.mouldId.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (item.typeOfMould && item.typeOfMould.toLowerCase().includes(searchQuery.toLowerCase()))
-    ) || [];
+    const filteredData = (Array.isArray(mouldsByBatch) ? mouldsByBatch : []).filter(item =>
+        (item?.mouldId && item.mouldId.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item?.typeOfMould && item.typeOfMould.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
 
     const getScanInTime = (item) => {
         if (item.mouldTransferHistory) {

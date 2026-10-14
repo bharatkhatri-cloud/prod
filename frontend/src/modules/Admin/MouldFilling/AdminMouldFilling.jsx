@@ -41,7 +41,7 @@ const AdminMouldFilling = () => {
       "Type of Mould": item.typeOfMould,
       "Mould Filling Date": FormatTime(item.fillingDate),
       "Mould Filled By": item.filledBy,
-      "LC/Jam ID": item.previousStatusTillBagInoculation?.JamOrLcId,
+      "LC ID": item.previousStatusTillBagInoculation?.JamOrLcId,
     }));
 
     setData(transformData);

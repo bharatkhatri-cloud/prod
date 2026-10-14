@@ -204,12 +204,12 @@ const Login = ({ loggedIn, isLoggedIn }) => {
             </p>
             <p className="text-xs mt-1">
               <a
-                href="https://github.com/ankit76350"
+                href="https://dharaksha.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-slate-500 hover:text-red-700 transition-colors duration-150"
+                className="font-medium text-slate-500 hover:text-emerald-700 transition-colors duration-150"
               >
-                Developed & Maintained by Ankit Kumar.
+                Developed & Maintained by Dharaksha Team.
               </a>
             </p>
           </div>

@@ -18,9 +18,8 @@ export const fetchToInoculateNewBag = createAsyncThunk('bagInoculation/fetchToIn
 
       if (!response.ok) {
           const errorData = await response.json();
-          toast.error(errorData.message);
-          return errorData
-          // throw new Error(errorData.message || "Failed to create a new bottle of jam.");
+          toast.error(errorData.message || "Failed to create bag");
+          return errorData;
       }
       
       const data = await response.json();

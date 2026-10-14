@@ -25,7 +25,7 @@ const SMFGBatchData = () => {
     const [resultPerPage, setResultPerPage] = useState(10);
     const [queryParams, setQueryParams] = useState({ page: 1, resultPerPage: 10 });
 
-    const allData = state?.data || [];
+    const allData = Array.isArray(state?.data) ? state.data : [];
 
     const fetchData = useCallback(() => {
         dispatch(fetchSmfgBatchData());
@@ -54,7 +54,7 @@ const SMFGBatchData = () => {
         setQueryParams({ ...queryParams, page: 1, resultPerPage: rpp });
     };
 
-    const filteredData = allData.filter(row => {
+    const filteredData = (Array.isArray(allData) ? allData : []).filter(row => {
         let isValid = true;
         if (filters.minGrowthType && (row.growthType === null || row.growthType < Number(filters.minGrowthType))) isValid = false;
         if (filters.maxGrowthType && (row.growthType === null || row.growthType > Number(filters.maxGrowthType))) isValid = false;

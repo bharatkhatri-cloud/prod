@@ -3,5 +3,8 @@
   "description": "This portal is for the Dharaksha sustainable packaging solutions.",
   "requestFramePermissions": [
     "camera"
+  ],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
   ]
 }

@@ -86,7 +86,7 @@ save_qr_codes_to_pdf('${formData.qrType}', ${parseInt(formData.startInd,10)},${p
 
                 <div className='p-0.5 '>
                     <label htmlFor="QR code prefix" className="block mt-2 text-sm font-medium text-teal-900">
-                        QR Code Prefix ( e.g LC, JAM etc)
+                        QR Code Prefix ( e.g LC, BG etc)
                     </label>
                     <div className='flex'>
                         <input type="text"

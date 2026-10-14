@@ -23,12 +23,12 @@ const SMFGMouldInBatch = ({ dataId, refreshKey, readOnly = false, onCountChange 
 
     const [searchQuery, setSearchQuery] = useState('');
 
-    const filteredData = mouldsByBatch?.filter(item => {
-        const mouldId = item.smFgId || item.mouldId || '';
-        const typeOfMould = item.prevStationInfo?.typeOfMould || item.typeOfMould || '';
+    const filteredData = (Array.isArray(mouldsByBatch) ? mouldsByBatch : []).filter(item => {
+        const mouldId = item?.smFgId || item?.mouldId || '';
+        const typeOfMould = item?.prevStationInfo?.typeOfMould || item?.typeOfMould || '';
         return mouldId.toLowerCase().includes(searchQuery.toLowerCase()) ||
                typeOfMould.toLowerCase().includes(searchQuery.toLowerCase());
-    }) || [];
+    });
 
     const getScanInTime = (item) => {
         const history = item.smfgTransferHistory || item.mouldTransferHistory;

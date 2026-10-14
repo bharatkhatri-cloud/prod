@@ -53,7 +53,7 @@ const AdminHumidifier = () => {
     }
   }
 
-  const searchHumidifier = getAllDataFromCollection.filter((currHum) => currHum.serialNo.includes(searchQuery))
+  const searchHumidifier = (Array.isArray(getAllDataFromCollection) ? getAllDataFromCollection : []).filter((currHum) => currHum?.serialNo?.includes(searchQuery));
 
   return (
     <>

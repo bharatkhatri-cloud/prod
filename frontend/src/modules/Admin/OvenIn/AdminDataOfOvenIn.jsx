@@ -26,9 +26,10 @@ const AdminDataOfOvenin = () => {
         setSelectOven(e.target.value);
     };
 
+    const safeOven = Array.isArray(oven) ? oven : [];
     const filteredOvens = selectOven 
-        ? oven.filter(item => item.ovenSerialNo === selectOven)
-        : oven;
+        ? safeOven.filter(item => item?.ovenSerialNo === selectOven)
+        : safeOven;
 
         console.log("oven",oven);
         console.log("ovenInState",ovenInState);

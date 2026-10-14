@@ -62,7 +62,7 @@ function AdminNavigation() {
 
               </div>
               <h2 className="text-lg text-teal-900 font-medium title-font mb-2">Bag Inoculation</h2>
-              <p className="leading-relaxed text-base">LC/JAM is inoculated into the Parali inside the bag.</p>
+              <p className="leading-relaxed text-base">LC is inoculated into the Parali inside the bag.</p>
             </div>
           </Link>
 

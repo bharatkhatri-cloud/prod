@@ -95,9 +95,9 @@ const MFBatchDetail = () => {
     const { batchInfo, moulds } = batchDetails;
     
     // Filter moulds by Mould Type
-    const filteredMoulds = moulds?.filter(mould => 
-        mould.typeOfMould?.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
+    const filteredMoulds = (Array.isArray(moulds) ? moulds : []).filter(mould => 
+        mould?.typeOfMould?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     
     // Pagination Logic for Moulds
     const totalFiltered = filteredMoulds.length;

@@ -20,8 +20,8 @@ const MFChambersGrid = () => {
         }
     }, [humidifiers]);
 
-    const searchHumidifier = allDataFromCollection?.filter((currHum) =>
-        currHum.department === 'MF' && currHum.serialNo.toLowerCase().includes(searchQuery.toLowerCase())
+    const searchHumidifier = (Array.isArray(allDataFromCollection) ? allDataFromCollection : []).filter((currHum) =>
+        currHum?.department === 'MF' && (currHum?.serialNo || "").toLowerCase().includes(searchQuery.toLowerCase())
     );
 
 

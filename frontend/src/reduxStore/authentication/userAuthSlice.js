@@ -184,7 +184,13 @@ export const userAuthSlice = createSlice({
     allUser: null,
     isError: false,
   },
-  reducers: {},
+  reducers: {
+    logoutUser: (state) => {
+      state.user = null;
+      state.isUserLoggedIn = false;
+      state.isLoading = false;
+    },
+  },
   extraReducers: (builder) => {
 
     builder.addCase(fetchToCreateNewUser.pending, (state) => {
@@ -240,12 +246,15 @@ export const userAuthSlice = createSlice({
 
     builder.addCase(fetchToLogout.pending, (state) => {
       state.isLoading = true;
-    }).addCase(fetchToLogout.fulfilled, (state, action) => {
+    }).addCase(fetchToLogout.fulfilled, (state) => {
       state.isLoading = false;
-      //   console.log(action.payload);
+      state.user = null;
+      state.isUserLoggedIn = false;
     }).addCase(fetchToLogout.rejected, (state, action) => {
-      console.log("Error", action.payload);
-      state.isError = true;
+      state.isLoading = false;
+      state.user = null;
+      state.isUserLoggedIn = false;
+      console.log("Logout completed with error notice:", action.payload);
     });
 
 
@@ -253,4 +262,5 @@ export const userAuthSlice = createSlice({
   },
 });
 
+export const { logoutUser } = userAuthSlice.actions;
 export default userAuthSlice.reducer;

@@ -142,7 +142,7 @@ const AddNewUser = () => {
                                             name="name"
                                             id="name"
                                             className="border border-teal-300 rounded-md px-4 py-2 w-full"
-                                            placeholder="Ankit Kumar"
+                                            placeholder="Dharaksha Team Member"
                                             required
                                         />
                                     </div>
@@ -160,7 +160,7 @@ const AddNewUser = () => {
                                             name="email"
                                             id="email"
                                             className="border border-teal-300 rounded-md px-4 py-2 w-full"
-                                            placeholder="ankit@company.com"
+                                            placeholder="team@dharaksha.com"
                                             required
                                         />
                                     </div>
@@ -182,7 +182,6 @@ const AddNewUser = () => {
                                             <option value="">...Select Role...</option>
                                             <option value="Admin">Admin</option>
                                             <option value="QR Code Generator">QR Code Generator</option>
-                                            <option value="Supervisor (Jam Preparation)">Supervisor (Jam Preparation)</option>
                                             <option value="Supervisor (LC Preparation)">Supervisor (LC Preparation)</option>
                                             <option value="Supervisor (LC Rejection)">Supervisor (LC Rejection)</option>
                                             <option value="Supervisor (Bag Inoculation)">Supervisor (Bag Inoculation)</option>

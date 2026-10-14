@@ -101,12 +101,12 @@ const ProfileCard = () => {
                </div>
                
                <a 
-                 href="https://github.com/ankit76350" 
+                 href="https://dharaksha.com" 
                  target="_blank" 
                  rel="noreferrer"
                  className="hover:text-teal-600 transition-colors flex items-center gap-1"
                >
-                 <span>Developed and maintained by Ankit Kumar</span>
+                 <span>Developed and maintained by Dharaksha Team</span>
                </a>
             </div>
 

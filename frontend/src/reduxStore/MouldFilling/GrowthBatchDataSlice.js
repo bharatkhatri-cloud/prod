@@ -39,7 +39,7 @@ const growthBatchDataSlice = createSlice({
             })
             .addCase(fetchGrowthBatchData.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.data = action.payload;
+                state.data = Array.isArray(action.payload) ? action.payload : [];
             })
             .addCase(fetchGrowthBatchData.rejected, (state) => {
                 state.isLoading = false;
