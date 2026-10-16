@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // Thunk for fetching Create a New User
 export const fetchToCreateNewUser = createAsyncThunk('userAuth/fetchToCreateNewUser', async (newUserDetails) => {
   try {
-    const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST;
+    const BACK_HOST = (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/").endsWith("/") ? (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/") : (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/") + "/";
     const url = `${BACK_HOST}api/v1/admin/createNewUser`;
     const response = await fetch(url, {
       method: "POST",
@@ -33,7 +33,7 @@ export const fetchToCreateNewUser = createAsyncThunk('userAuth/fetchToCreateNewU
 export const fetchToGetAllUser = createAsyncThunk('userAuth/fetchToGetAllUser', async () => {
   try {
 
-    const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST;
+    const BACK_HOST = (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/").endsWith("/") ? (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/") : (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/") + "/";
     const url = `${BACK_HOST}api/v1/admin/getAllUsers`;
     const response = await fetch(url, {
       method: "GET",
@@ -58,7 +58,7 @@ export const fetchToGetAllUser = createAsyncThunk('userAuth/fetchToGetAllUser', 
 export const fetchToDeleteUser = createAsyncThunk('userAuth/fetchToDeleteUser', async (id) => {
   try {
 
-    const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST;
+    const BACK_HOST = (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/").endsWith("/") ? (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/") : (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/") + "/";
     const url = `${BACK_HOST}api/v1/admin/userDelete/${id}`;
     const response = await fetch(url, {
       method: "DELETE",
@@ -89,7 +89,7 @@ export const fetchToDeleteUser = createAsyncThunk('userAuth/fetchToDeleteUser', 
 export const fetchToGetLoggedInUserDetails = createAsyncThunk('userAuth/fetchToGetLoggedInUserDetails', async () => {
   try {
     //   const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST_URL;
-    const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST;
+    const BACK_HOST = (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/").endsWith("/") ? (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/") : (process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/") + "/";
     const url = `${BACK_HOST}api/v1/me`;
     const response = await fetch(url, {
       method: "GET",

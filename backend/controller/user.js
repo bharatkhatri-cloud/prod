@@ -281,63 +281,56 @@ exports.sendUserInfoEmail = catchAsyncError(async (req, res, next) => {
     let bytes = CryptoJS.AES.decrypt(user.password, process.env.AES_SECRET);
     let decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
 
-
-    // Generate a JWT token that expires in 5 minutes
-    const token = jwt.sign(
-        {
-            userId: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                password: decryptedPassword,
-                created_on: user.created_on
-            }
-        },
-        process.env.EMAIL_JWT_SECRET,
-        { expiresIn: "5m" }
-    );
-
-    // Construct the temporary access link
-    const accessLink = `${process.env.FRONTEND_URL}access-user-info?token=${token}`;
-    // const accessLink = `${`http://localhost:3000`}/access-user-info?token=${token}`;
-
-    const loginnedAdmin = req.user
-    
-    // Nodemailer transporter setup
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.FROM_EMAIL,
-            pass: process.env.EMAIL_PASSWORD,
-        },
-    });
-
-    // Email options
-    const mailOptions = {
-        from: process.env.FROM_EMAIL,
-        to: loginnedAdmin.email,
-        subject: `${user.name} Account Information (Temporary Access)`,
-        html: `
-            <p>Hii ${""}</p>
-            <p>You can access account details using the link below. This link will expire in 5 minutes:</p>
-            <a href="${accessLink}" target="_blank">Access Account Info</a>
-            <p>If you did not request this, please ignore this email.</p>
-            <p>Regards,<br/>Your Team</p>
-        `,
+    const userInfo = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        password: decryptedPassword,
+        created_on: user.created_on
     };
 
-    // Send the email
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return next(new Errorhandler("Failed to send email: " + error.message, 500));
-        }
+    // Optional background email send only if real credentials are configured
+    if (process.env.FROM_EMAIL && process.env.EMAIL_PASSWORD && process.env.EMAIL_PASSWORD !== "dev_email_password") {
+        try {
+            const token = jwt.sign(
+                { userId: userInfo },
+                process.env.EMAIL_JWT_SECRET || "default_jwt_secret",
+                { expiresIn: "5m" }
+            );
+            const accessLink = `${process.env.FRONTEND_URL || "http://localhost:3000/"}access-user-info?token=${token}`;
+            const loginnedAdmin = req.user;
 
-        res.status(200).json({
-            success: true,
-            message: `User info sent to this email ${loginnedAdmin.email}`,
-            info: info.response,
-        });
+            const transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: process.env.FROM_EMAIL,
+                    pass: process.env.EMAIL_PASSWORD,
+                },
+            });
+
+            const mailOptions = {
+                from: process.env.FROM_EMAIL,
+                to: loginnedAdmin?.email || user.email,
+                subject: `${user.name} Account Information`,
+                html: `
+                    <p>Account details for ${user.name}:</p>
+                    <p><a href="${accessLink}" target="_blank">Click here to access user credentials</a></p>
+                `,
+            };
+
+            transporter.sendMail(mailOptions, (err) => {
+                if (err) console.warn("[Email Notification Notice]", err.message);
+            });
+        } catch (e) {
+            console.warn("[Email Notification Notice]", e.message);
+        }
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: "User information retrieved successfully",
+        user: userInfo,
     });
 });
 

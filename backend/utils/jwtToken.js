@@ -16,8 +16,11 @@ const sentToken = (userDetails,statusCode,res)=>{
     };
 
     res.status(statusCode).cookie("dhaDbTkn",dbToken,option).json({
-        success:true,
+        success: true,
+        user: userDetails,
         userDetails,
+        loggedInUser: userDetails,
+        dhaDbTkn: dbToken,
         dbToken,
     });
 

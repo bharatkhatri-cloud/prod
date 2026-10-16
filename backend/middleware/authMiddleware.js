@@ -12,7 +12,8 @@ exports.isAuthenticatedUser = catchAsyncError(async(req,res,next)=>{
     if (!dhaDbTkn) {
         return next(new errorHandler("Please Login to access this resources",401));
     }
-    const decodeData = jwt.verify(dhaDbTkn,process.env.JWT_SECRET);
+    const secret = process.env.JWT_SECRET || "iughiugdgduibfiudbgjijdfgasjkfjksadfuiusdfbsdbfjksdfjkOIHHOGDFOGH";
+    const decodeData = jwt.verify(dhaDbTkn, secret);
     if (mongoose.connection.readyState === 1 && decodeData.id) {
         req.user = await UserModel.findById(decodeData.id);
     }

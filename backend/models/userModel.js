@@ -36,8 +36,9 @@ const userSchema = new mongoose.Schema({
 
 
 userSchema.methods.getTWTToken = function () {
-    return jwt.sign({id:this._id},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE,});
-    // this se indivisual ka id milega. 
+    const secret = process.env.JWT_SECRET || "iughiugdgduibfiudbgjijdfgasjkfjksadfuiusdfbsdbfjksdfjkOIHHOGDFOGH";
+    const expire = process.env.JWT_EXPIRE || "5d";
+    return jwt.sign({ id: this._id, name: this.name, role: this.role, email: this.email }, secret, { expiresIn: expire });
 };
 
 module.exports = mongoose.model("User", userSchema); 

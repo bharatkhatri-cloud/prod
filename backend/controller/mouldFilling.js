@@ -182,33 +182,33 @@ const filledNewMould = catchAsyncError(async (req, res, next) => {
 });
 
 
-const getMouldData = catchAsyncError(async (req, res) => {
+const getMouldData = catchAsyncError(async (req, res, next) => {
     const resultPerPage = 50;
 
     const totalDataOfMouldFilled = await MouldFillingModel.countDocuments();
 
-    const apiFeatures = new ApiFeatures(MouldFillingModel.find(), req.query).filter("fillingDate").sort("fillingDate").pagination(resultPerPage);
-    const mouldFillingData = await apiFeatures.query.populate("previousStatusTillBagInoculation");
+    const apiFeatures = new ApiFeatures(MouldFillingModel.find(), req.query)
+        .filter("fillingDate")
+        .sort("fillingDate")
+        .pagination(resultPerPage);
 
-    const apiFeaturesForAllFilteredData = new ApiFeatures(MouldFillingModel.find(), req.query).filter("fillingDate").sort("fillingDate")
-    const allFilteredData = await apiFeaturesForAllFilteredData.query.populate("previousStatusTillBagInoculation");
-    const totalNoOfDataFiltered = allFilteredData.length;
+    const mouldFillingData = (await apiFeatures.query.allowDiskUse(true).populate("previousStatusTillBagInoculation")) || [];
 
-    if (!mouldFillingData) {
-        return next(new Errorhandler("For Selected Query, Data Is Not Present", 404));
-    }
+    // Count filtered documents directly via countDocuments instead of loading 200k+ documents into memory
+    const countFeatures = new ApiFeatures(MouldFillingModel.find(), req.query).filter("fillingDate");
+    const totalNoOfDataFiltered = await MouldFillingModel.countDocuments(countFeatures.query.getFilter());
 
-    res.status(201).json({
+    res.status(200).json({
         success: true,
         message: `Mould Filling Data`,
-        totalDataOfMouldFilled,
-        totalNoOfDataFiltered: totalNoOfDataFiltered,
+        totalDataOfMouldFilled: totalDataOfMouldFilled || 0,
+        totalNoOfDataFiltered: totalNoOfDataFiltered || 0,
         totalDataShowedOnOnePage: mouldFillingData.length,
         resultPerPage,
         mouldFillingData,
-        allFilteredData
-    })
-})
+        allFilteredData: mouldFillingData
+    });
+});
 
 
 

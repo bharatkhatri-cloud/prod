@@ -87,33 +87,83 @@ const rejectNewMould = catchAsyncError(async (req, res, next) => {
 
 
 
-const getRejectedMouldData = catchAsyncError(async (req, res) => {
-  const resultPerPage = 50;
+const rejectMouldsByMixId = catchAsyncError(async (req, res, next) => {
+  const { mixId } = req.params;
+  const { reasonOfRejection, notes } = req.body;
+  const mouldRejectedBy = req.user?.name || "Admin";
 
-  const totalDataOfMouldRejected = await MouldFillingModel.countDocuments();
-
-  const apiFeatures = new ApiFeatures(MouldFillingModel.find({ "isMouldRejected": true }), req.query).filter("mouldRejectionDate").sort("mouldRejectionDate").pagination(resultPerPage);
-  const mouldRejectedData = await apiFeatures.query.populate("previousStatusTillBagInoculation");
-
-  const apiFeaturesForAllFilteredData = new ApiFeatures(MouldFillingModel.find({ "isMouldRejected": true }), req.query).filter("mouldRejectionDate").sort("mouldRejectionDate")
-  const allFilteredData = await apiFeaturesForAllFilteredData.query.populate("previousStatusTillBagInoculation");
-  const totalNoOfDataFiltered = allFilteredData.length;
-
-  if (!mouldRejectedData) {
-    return next(new Errorhandler("For Selected Query, Data Is Not Present", 404));
+  if (!reasonOfRejection || !reasonOfRejection.trim()) {
+    return next(new Errorhandler("Please provide a reason for rejecting this mix", 400));
   }
+
+  // Find all unrejected moulds under this mixId
+  const targetMoulds = await MouldFillingModel.find({ mixId, isMouldRejected: { $ne: true } });
+  if (targetMoulds.length === 0) {
+    return next(new Errorhandler(`No active (unrejected) moulds found under Mix "${mixId}".`, 404));
+  }
+
+  const mouldIds = targetMoulds.map((m) => m.mouldId);
+
+  // Update all moulds under this mix
+  const updateResult = await MouldFillingModel.updateMany(
+    { mixId, isMouldRejected: { $ne: true } },
+    {
+      $set: {
+        isMouldRejected: true,
+        mouldRejectionReason: reasonOfRejection.trim(),
+        mouldRejectionDate: new Date(),
+        mouldRejectedBy: mouldRejectedBy,
+      },
+    }
+  );
+
+  // Update BagMix status to QUARANTINED
+  const BagMixModel = require("../models/bagMixModel");
+  await BagMixModel.findOneAndUpdate(
+    { mixId },
+    {
+      $set: {
+        status: "QUARANTINED",
+        notes: notes ? `Quarantined: ${notes}` : `Quarantined due to: ${reasonOfRejection.trim()}`,
+      },
+    }
+  );
 
   res.status(200).json({
     success: true,
-    message: `Mould Filling Data`,
+    message: `Successfully quarantined and rejected all ${updateResult.modifiedCount} moulds belonging to Mix "${mixId}".`,
+    mixId,
+    rejectedCount: updateResult.modifiedCount,
+    mouldIds,
+  });
+});
+
+const getRejectedMouldData = catchAsyncError(async (req, res, next) => {
+  const resultPerPage = 50;
+
+  const totalDataOfMouldRejected = await MouldFillingModel.countDocuments({ isMouldRejected: true });
+
+  const apiFeatures = new ApiFeatures(MouldFillingModel.find({ isMouldRejected: true }), req.query)
+    .filter("mouldRejectionDate")
+    .sort("mouldRejectionDate")
+    .pagination(resultPerPage);
+
+  const mouldRejectedData = (await apiFeatures.query.allowDiskUse(true).populate("previousStatusTillBagInoculation")) || [];
+
+  const countFeatures = new ApiFeatures(MouldFillingModel.find({ isMouldRejected: true }), req.query).filter("mouldRejectionDate");
+  const totalNoOfDataFiltered = await MouldFillingModel.countDocuments(countFeatures.query.getFilter());
+
+  res.status(200).json({
+    success: true,
+    message: `Rejected Mould Data`,
     totalDataOfMouldRejected,
-    totalNoOfDataFiltered: totalNoOfDataFiltered,
+    totalNoOfDataFiltered: totalNoOfDataFiltered || 0,
     totalDataShowedOnOnePage: mouldRejectedData.length,
     resultPerPage,
     mouldRejectedData,
-    allFilteredData
-  })
-})
+    allFilteredData: mouldRejectedData,
+  });
+});
 
 
 const deleteRejectedMould = catchAsyncError(async (req, res, next) => {
@@ -194,4 +244,4 @@ const updateRjectedMould = catchAsyncError(async (req, res, next) => {
 
 
 
-module.exports = { validationForMouldRejection, rejectNewMould, getRejectedMouldData, deleteRejectedMould, updateRjectedMould } 
+module.exports = { validationForMouldRejection, rejectNewMould, rejectMouldsByMixId, getRejectedMouldData, deleteRejectedMould, updateRjectedMould }; 

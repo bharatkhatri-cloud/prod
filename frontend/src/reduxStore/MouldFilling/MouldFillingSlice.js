@@ -35,16 +35,27 @@ export const fetchToCreateNewMouldFilling = createAsyncThunk('mouldFilling/fetch
 // Thunk to fetch Mould Filling data
 export const fetchToGetMouldFillingData = createAsyncThunk('mouldFilling/fetchToGetMouldFillingData', async (queryParams) => {
     try {
-        const params = new URLSearchParams(queryParams);
-            const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST;
-        const url = `${BACK_HOST}api/v1/getMouldData?${params}`;
+        const cleanParams = {};
+        if (queryParams && typeof queryParams === 'object') {
+            Object.keys(queryParams).forEach((key) => {
+                const val = queryParams[key];
+                if (val !== '' && val !== undefined && val !== null) {
+                    cleanParams[key] = val;
+                }
+            });
+        }
+        const params = new URLSearchParams(cleanParams);
+        const BACK_HOST = process.env.REACT_APP_BACKEND_PORT_AND_HOST || "/";
+        const queryStr = params.toString();
+        const url = `${BACK_HOST}api/v1/getMouldData${queryStr ? '?' + queryStr : ''}`;
         const response = await fetch(url, {
             method: 'GET',
             credentials:'include'
         });
 
         if (!response.ok) {
-            throw new Error("Failed to fetch mould filling data.");
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.message || "Failed to fetch mould filling data.");
         }
 
         const data = await response.json();

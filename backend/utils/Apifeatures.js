@@ -8,42 +8,46 @@ class ApiFeatures {
     filter(timeStamp) {
         const queryCopy = { ...this.queryStr };
 
-        if ('onDate' in this.queryStr) {
+        if (this.queryStr.onDate && !isNaN(new Date(this.queryStr.onDate).getTime())) {
             queryCopy[timeStamp] = {
-                // $gte: new Date(this.queryStr.onDate),
-                // $lte: new Date(new Date(this.queryStr.onDate).setUTCHours(23, 59, 59, 999))
                 $gte: new Date(new Date(this.queryStr.onDate).setHours(0, 0, 0, 0)),
                 $lte: new Date(new Date(this.queryStr.onDate).setHours(23, 59, 59, 999))
-            }
+            };
         }
 
-
-        if ('startDate' in this.queryStr && 'endDate' in this.queryStr) {
+        if (
+            this.queryStr.startDate &&
+            this.queryStr.endDate &&
+            !isNaN(new Date(this.queryStr.startDate).getTime()) &&
+            !isNaN(new Date(this.queryStr.endDate).getTime())
+        ) {
             queryCopy[timeStamp] = {
-                // $gte: new Date(this.queryStr.startDate),
-                // $lte: new Date(new Date(this.queryStr.endDate).setUTCHours(23, 59, 59, 999))
                 $gte: new Date(new Date(this.queryStr.startDate).setHours(0, 0, 0, 0)),
                 $lte: new Date(new Date(this.queryStr.endDate).setHours(23, 59, 59, 999))
-            }
+            };
         }
 
-        // console.log('====================================');
-        // console.log("queryCopy[timeStamp] -1 ",queryCopy[timeStamp]);
-        // console.log('====================================');
-     
-
-        const removeFields = ["page", "limit", "startDate", 'endDate', 'onDate','sort'];
+        const removeFields = ["page", "limit", "startDate", 'endDate', 'onDate', 'sort'];
         removeFields.forEach((key) => delete queryCopy[key]);
+
+        // Clean up empty strings, null, and undefined values so they don't break queries
+        Object.keys(queryCopy).forEach((key) => {
+            if (queryCopy[key] === "" || queryCopy[key] === null || queryCopy[key] === undefined) {
+                delete queryCopy[key];
+            }
+        });
 
         // Apply remaining fields as filters
         this.query = this.query.find(queryCopy);
 
-     
         return this;
     }
 
     sort(field) {
         this.query = this.query.sort({ [field]: -1 }); // 1 for ascending, -1 for descending
+        if (typeof this.query.allowDiskUse === "function") {
+            this.query = this.query.allowDiskUse(true);
+        }
         return this;
     }
 

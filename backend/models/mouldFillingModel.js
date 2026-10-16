@@ -73,7 +73,9 @@ const mouldFillingSchema = new mongoose.Schema({
         default:"",
     }
 
-})
+});
+
+mouldFillingSchema.index({ fillingDate: -1 });
 
 module.exports = mongoose.model("mouldfilling", mouldFillingSchema); 
 

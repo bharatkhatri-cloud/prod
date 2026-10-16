@@ -187,20 +187,21 @@ const HumidifierMouldInfo = () => {
                             <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase border">Growth %</th>
                             <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase border">Type of Mould</th>
                             <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase border">Mould ID</th>
+                            <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase border">Mix ID</th>
                             <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase border">SM FG ID</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
                         {state.isLoading && (
                             <tr>
-                                <td colSpan={9} className="py-8 text-center">
+                                <td colSpan={10} className="py-8 text-center">
                                     <Loader />
                                 </td>
                             </tr>
                         )}
                         {!state.isLoading && mouldInfoData.length === 0 && (
                             <tr>
-                                <td colSpan={9} className="py-8 text-center text-sm text-gray-400">
+                                <td colSpan={10} className="py-8 text-center text-sm text-gray-400">
                                     No data found
                                 </td>
                             </tr>
@@ -220,6 +221,15 @@ const HumidifierMouldInfo = () => {
                                 <td className="px-4 py-3 text-sm text-gray-700 border text-center">{row.growthType ?? '—'}</td>
                                 <td className="px-4 py-3 text-sm text-gray-700 border">{row.typeOfMould ?? '—'}</td>
                                 <td className="px-4 py-3 text-sm text-gray-700 border font-mono text-xs">{row.mouldId ?? '—'}</td>
+                                <td className="px-4 py-3 text-sm text-gray-700 border">
+                                    {row.mixId ? (
+                                        <span className="px-2 py-0.5 text-xs font-semibold rounded bg-purple-100 text-purple-800 font-mono">
+                                            {row.mixId}
+                                        </span>
+                                    ) : (
+                                        <span className="text-gray-400 text-xs font-mono">—</span>
+                                    )}
+                                </td>
                                 <td className="px-4 py-3 text-sm text-gray-700 border font-mono text-xs">{row.smFgId ?? '—'}</td>
                             </tr>
                         ))}

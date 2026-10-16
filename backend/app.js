@@ -20,6 +20,8 @@ for (const key in process.env) {
     }
 }
 
+process.env.DB_URL = process.env.DB_URL || process.env.MONGODB_URI || 'mongodb+srv://serverTeam:KUyvLTDCKt0wrjer@dharakshadb.rodoa.mongodb.net/dharaksha?authSource=admin&retryWrites=true&w=majority&appName=dharakshaDB';
+
 if (process.env.DB_URL) {
     if (process.env.DB_URL.includes("Ankit%404202")) {
         process.env.DB_URL = process.env.DB_URL.replace("Ankit%404202", "KUyvLTDCKt0wrjer");
@@ -81,6 +83,9 @@ app.use("/api/v1", userRoutes)
 app.use("/api/v1", growthChamberRoutes)
 app.use("/api/v1", bagMixRouter)
 
+const { getMouldData } = require("./controller/mouldFilling");
+app.get("/api/v2s/mould-filling/get-data", getMouldData);
+
 // Stubs for /api/v2s routes
 const mockSettings = [
     { settingKey: "MOULD_FILLING_BAG_CHECK", label: "Mould Filling (Bag Check)", enabled: true },
@@ -99,15 +104,12 @@ app.post("/api/v2s/notifications/:id/read", (req, res) => {
 app.delete("/api/v2s/notifications/:id", (req, res) => {
     res.json({ success: true });
 });
-app.get("/api/v2s/dashboard/dashboard-count", (req, res) => {
-    res.json({ allModuleData: {} });
-});
-app.get("/api/v2s/dashboard/lc-analytics", (req, res) => {
-    res.json({ preparedCount: 0, rejectedCount: 0, chartData: [] });
-});
-app.get("/api/v2s/dashboard/bag-analytics", (req, res) => {
-    res.json({ inoculatedCount: 0, rejectedCount: 0, chartData: [] });
-});
+const { getDataOfAllModules, getDataOfLcModules, getDataOfBagModules, getDataOfMouldModules } = require("./controller/dashboard");
+
+app.get("/api/v2s/dashboard/dashboard-count", getDataOfAllModules);
+app.get("/api/v2s/dashboard/lc-analytics", getDataOfLcModules);
+app.get("/api/v2s/dashboard/bag-analytics", getDataOfBagModules);
+app.get("/api/v2s/dashboard/mould-analytics", getDataOfMouldModules);
 app.get("/api/v2s/settings", (req, res) => {
     res.json(mockSettings);
 });

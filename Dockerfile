@@ -5,13 +5,14 @@ FROM node:20-alpine AS frontend-builder
 
 WORKDIR /app
 
-# Copy root and workspace package files
+# Copy npm config and package definitions
+COPY .npmrc* ./
 COPY package.json package-lock.json* ./
 COPY frontend/package.json ./frontend/
 COPY backend/package.json ./backend/
 
-# Install dependencies for workspace building
-RUN npm install
+# Install dependencies with legacy peer deps enabled
+RUN npm install --legacy-peer-deps
 
 # Copy frontend source and build optimized production bundle
 COPY frontend/ ./frontend/
@@ -32,10 +33,11 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Install production dependencies for backend workspace only
+# Install production dependencies for backend workspace
+COPY .npmrc* ./
 COPY package.json package-lock.json* ./
 COPY backend/package.json ./backend/
-RUN npm install --omit=dev --workspace=backend
+RUN npm install --omit=dev --workspace=backend --legacy-peer-deps
 
 # Copy backend application source and configs
 COPY backend/ ./backend/

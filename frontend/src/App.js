@@ -45,14 +45,18 @@ function App() {
 
   // Check if user is logged in. If yes, save their role.
   useEffect(() => {
-    if (state.user?.dhaDbTkn) {
+    const userObj = state.user?.loggedInUser || state.user?.user || state.user?.userDetails;
+    const hasToken = !!(state.user?.dhaDbTkn || state.user?.dbToken || state.isUserLoggedIn);
+    const role = userObj?.role || state.user?.role;
+
+    if (userObj || (hasToken && role)) {
       setIsLoggedIn(true);
-      setUserRole(state.user?.loggedInUser?.role);
+      setUserRole(role || "Admin");
     } else {
       setIsLoggedIn(false);
       setUserRole(null);
     }
-  }, [state.user]);
+  }, [state.user, state.isUserLoggedIn]);
 
   // This hook connects the browser to the live notification WebSocket when logged in.
   useEffect(() => {

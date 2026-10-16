@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-mongoose.set('bufferCommands', false); // CRITICAL: fail fast, don't hang
-
 const connectDataBase = () => {
     let DB_URL = process.env.DB_URL || process.env.MONGODB_URI || 'mongodb+srv://serverTeam:KUyvLTDCKt0wrjer@dharakshadb.rodoa.mongodb.net/dharaksha?authSource=admin&retryWrites=true&w=majority&appName=dharakshaDB';
     

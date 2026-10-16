@@ -75,6 +75,7 @@ const AdminDataOfDeMouldingPieces = ({ queryParams }) => {
                                         <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">S.No.</th>
                                         <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Piece Id</th>
                                         <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Mould Id</th>
+                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Mix ID</th>
                                         <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">De-Moulding Time</th>
                                         <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Mould Filling Time</th>
                                         <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">De-Moulded By</th>
@@ -86,7 +87,7 @@ const AdminDataOfDeMouldingPieces = ({ queryParams }) => {
                                 <tbody className="divide-y divide-gray-200">
                                     {state.isLoading &&
                                         <tr>
-                                            <td colSpan={'8'} className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center mx-auto">
+                                            <td colSpan={'10'} className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center mx-auto">
                                                 <Loader />
                                             </td>
                                         </tr>
@@ -95,8 +96,17 @@ const AdminDataOfDeMouldingPieces = ({ queryParams }) => {
                                     {(Array.isArray(getAllDataFromCollection) ? getAllDataFromCollection : []).map((currItem, index) => (
                                         <tr className='hover:bg-teal-300' key={currItem._id}>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{index + 1}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{currItem.smFgId}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{currItem.mouldId}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border font-mono">{currItem.smFgId}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border font-mono">{currItem.mouldId}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">
+                                                {currItem.previousStatusTillMouldFilling?.mixId ? (
+                                                    <span className="px-2 py-0.5 text-xs font-semibold rounded bg-teal-100 text-teal-800 font-mono">
+                                                        {currItem.previousStatusTillMouldFilling.mixId}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-gray-400">—</span>
+                                                )}
+                                            </td>
                                             {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{FormatTime(currItem.deMouldingPieceTime)}</td> */}
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">
                                                 <div>{FormatTime(currItem.deMouldingPieceTime)} </div>

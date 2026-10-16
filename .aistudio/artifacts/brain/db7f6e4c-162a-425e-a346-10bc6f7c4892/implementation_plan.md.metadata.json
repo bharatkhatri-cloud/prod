@@ -1,6 +1,6 @@
 {
-  "summary": "Implementation plan to fix the Windows Docker Compose '.env not found' error by embedding working environment defaults into docker-compose.yml, removing the obsolete version tag, and providing one-click start.bat and start.ps1 scripts.",
-  "updatedAt": "2026-10-14T18:40:16.144762820Z",
+  "summary": "Comprehensive operational architecture and flowchart detailing the complete manufacturing tracking lifecycle, QR code transitions at every station, multi-bag mix to multi-mould integration, and double-scan prevention.",
+  "updatedAt": "2026-10-16T19:44:10.361467835Z",
   "requestFeedback": true,
   "userFacing": true
 }

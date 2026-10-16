@@ -13,86 +13,87 @@ const ovenDataModel = require("../models/ovenDataModel");
 const HumidifierDataModel = require("../models/humidiferDataModel");
 
 exports.getDataOfAllModules = catchAsyncError(async (req, res) => {
-  const resultPerPage = Number.MAX_SAFE_INTEGER;
+  const mongoose = require("mongoose");
 
+  // Filter and count LC
+  const apiFeaturesForLcPreparation = new ApiFeatures(LcPreparationModel.find(), req.query).filter("lcPreparationTime");
+  const totalCountDataOfPreparedLc = await LcPreparationModel.countDocuments(apiFeaturesForLcPreparation.query.getFilter());
 
-  const apiFeaturesForLcPreparation = new ApiFeatures(LcPreparationModel.find(), req.query).filter("lcPreparationTime").sort("lcPreparationTime").pagination(resultPerPage);
-  const dataOfAllPreparedLc = await apiFeaturesForLcPreparation.query;
+  const apiFeaturesForLcRejection = new ApiFeatures(LcRejectionModel.find(), req.query).filter("lcRejectionTime");
+  const totalCountDataOfRejectedLc = await LcRejectionModel.countDocuments(apiFeaturesForLcRejection.query.getFilter());
 
-  const apiFeaturesForLcRejection = new ApiFeatures(LcRejectionModel.find(), req.query).filter("lcRejectionTime").sort("lcRejectionTime").pagination(resultPerPage);
-  const dataOfAllRejectedLc = await apiFeaturesForLcRejection.query;
+  // Filter and count Bag
+  const apiFeaturesForBagInoculation = new ApiFeatures(BagInoculationModel.find(), req.query).filter("inoculationTimeStamp");
+  const totalCountDataOfBagInoculationData = await BagInoculationModel.countDocuments(apiFeaturesForBagInoculation.query.getFilter());
 
+  const apiFeaturesForBagIncubation = new ApiFeatures(BagIncubationModel.find(), req.query).filter("bagRejectionTime");
+  const totalCountDataOfRejectedBag = await BagIncubationModel.countDocuments(apiFeaturesForBagIncubation.query.getFilter());
 
-  const apiFeaturesForBagInoculation = new ApiFeatures(BagInoculationModel.find(), req.query).filter("inoculationTimeStamp").sort("inoculationTimeStamp").pagination(resultPerPage);
-  const dataOfAllBagInoculationData = await apiFeaturesForBagInoculation.query;
+  // Filter and count Mould
+  const apiFeaturesForMouldFilling = new ApiFeatures(MouldFillingModel.find(), req.query).filter("fillingDate");
+  const totalCountDataOfMouldFillingData = await MouldFillingModel.countDocuments(apiFeaturesForMouldFilling.query.getFilter());
 
-  const apiFeaturesForBagIncubation = new ApiFeatures(BagIncubationModel.find(), req.query).filter("bagRejectionTime").sort("bagRejectionTime").pagination(resultPerPage);
-  const dataOfAllRejectedBag = await apiFeaturesForBagIncubation.query;
+  const bagScannedInMouldFillingCount = await new FindCount(req.query).bagScannedInMouldFilling().catch(() => 0);
+  const mouldRejectionCount = await new FindCount(req.query).getRejectedMouldCount().catch(() => 0);
 
+  // Mould batch count from growthbatches
+  let mouldBatchQuery = { department: "mould-filling" };
+  if (req.query.startDate && req.query.endDate) {
+    mouldBatchQuery.placingTime = {
+      $gte: new Date(new Date(req.query.startDate).setHours(0, 0, 0, 0)),
+      $lte: new Date(new Date(req.query.endDate).setHours(23, 59, 59, 999))
+    };
+  } else if (req.query.onDate) {
+    mouldBatchQuery.placingTime = {
+      $gte: new Date(new Date(req.query.onDate).setHours(0, 0, 0, 0)),
+      $lte: new Date(new Date(req.query.onDate).setHours(23, 59, 59, 999))
+    };
+  }
+  const mouldBatchCount = await mongoose.connection.db.collection("growthbatches").countDocuments(mouldBatchQuery).catch(() => 0);
 
-  //TOdo : mould related count
-  const apiFeaturesForMouldFilling = new ApiFeatures(MouldFillingModel.find(), req.query).filter("fillingDate").sort("fillingDate").pagination(resultPerPage);
-  const dataOfAllMouldFillingData = await apiFeaturesForMouldFilling.query;
-  const bagScannedInMouldFillingCount = await new FindCount(req.query).bagScannedInMouldFilling();
-  const mouldRejectionCount = await new FindCount(req.query).getRejectedMouldCount();
+  // Filter and count De-Mould
+  const apiFeaturesForDeMouldingPiece = new ApiFeatures(DeMouldingPieceModel.find(), req.query).filter("deMouldingPieceTime");
+  const totalCountDataOfDeMouldedPiece = await DeMouldingPieceModel.countDocuments(apiFeaturesForDeMouldingPiece.query.getFilter());
 
+  // Oven in & out and batch count
+  const ovenInBatchCount = await new FindCount(req.query).batchOvenIn().catch(() => 0);
+  const ovenInCount = await new FindCount(req.query).getSmFgIdCountByInTime().catch(() => 0);
+  const ovenOutCount = await new FindCount(req.query).getSmFgIdCountByOutTime().catch(() => 0);
 
-  const apiFeaturesForMouldIncubation = new ApiFeatures(MouldIncubationModel.find(), req.query).filter("rejectionTime").sort("rejectionTime").pagination(resultPerPage);
-  const dataOfAllMouldRejectedData = await apiFeaturesForMouldIncubation.query;
+  // Humidifier item count and batch count
+  const humidifierCount = await new FindCount(req.query).humidifierItemCout().catch(() => 0);
+  const humidifierBatchCount = await new FindCount(req.query).getHumidifierBatchCount().catch(() => 0);
 
-
-  const apiFeaturesForDeMouldingPiece = new ApiFeatures(DeMouldingPieceModel.find(), req.query).filter("deMouldingPieceTime").sort("deMouldingPieceTime").pagination(resultPerPage);
-  const dataOfAllDeMouldedPiece = await apiFeaturesForDeMouldingPiece.query;
-
-  const apiFeaturesForDeMouldingRejection = new ApiFeatures(DeMouldingRejectionModel.find(), req.query).filter("rejectedDeMouldingTime").sort("rejectedDeMouldingTime").pagination(resultPerPage);
-  const dataOfAllDeMouldedRejection = await apiFeaturesForDeMouldingRejection.query;
-
-
-
-
-
-  //! for oven in & out and also batch count
-  const ovenInBatchCount = await new FindCount(req.query).batchOvenIn();
-  const ovenInCount = await new FindCount(req.query).getSmFgIdCountByInTime();
-  const ovenOutCount = await new FindCount(req.query).getSmFgIdCountByOutTime();
-
-
-  //! for humidifier item count and batch count
-  const humidifierCount = await new FindCount(req.query).humidifierItemCout();
-  const humidifierBatchCount = await new FindCount(req.query).getHumidifierBatchCount();
-
-
-  //! do same thing for oven in and remove batch automatice when the all item scan in oven out
   res.status(200).json({
     message: `Data Of All Modules`,
     allModuleData: {
-      // ? LC
-      totalCountDataOfPreparedLc: dataOfAllPreparedLc.length,
-      totalCountDataOfRejectedLc: dataOfAllRejectedLc.length,
+      // LC
+      totalCountDataOfPreparedLc,
+      totalCountDataOfRejectedLc,
       
-      // ? Bag 
-      totalCountDataOfBagInoculationData: dataOfAllBagInoculationData.length,
-      totalCountDataOfRejectedBag: dataOfAllRejectedBag.length,
+      // Bag 
+      totalCountDataOfBagInoculationData,
+      totalCountDataOfRejectedBag,
       
-      // ? Mould
-      totalCountDataOfMouldFillingData: dataOfAllMouldFillingData.length,
+      // Mould
+      mouldBatchCount,
+      totalCountDataOfMouldFillingData,
       bagScannedInMouldFillingCount,
       mouldRejectionCount,
       
-      // ? De-Mould
-      totalCountDataOfDeMouldedPiece: dataOfAllDeMouldedPiece.length,
+      // De-Mould
+      totalCountDataOfDeMouldedPiece,
       
-      // ? Humidifier
+      // Humidifier
       humidifierBatchCount,
       humidifierCount,
       
-      // ? Oven
+      // Oven
       ovenInBatchCount,
       ovenInCount,
       ovenOutCount,
     }
   });
-
 })
 
 
@@ -108,24 +109,22 @@ class FindCount {
     getDateRange() {
       let startOfDay, endOfDay;
 
-      if ("onDate" in this.queryStr) {
-        startOfDay = new Date(new Date(this.queryStr.onDate).setHours(0, 0, 0, 0))
-        // startOfDay.setHours(0, 0, 0, 0);
-        endOfDay = new Date(new Date(this.queryStr.onDate).setHours(23, 59, 59, 999))
-        // endOfDay.setHours(23, 59, 59, 999);
-
-      } else if ("startDate" in this.queryStr && "endDate" in this.queryStr) {
-        startOfDay = new Date(new Date(this.queryStr.startDate).setHours(0, 0, 0, 0))
-        // startOfDay.setHours(0, 0, 0, 0);
-        endOfDay = new Date(new Date(this.queryStr.endDate).setHours(23, 59, 59, 999))
-        // endOfDay.setHours(23, 59, 59, 999);
+      if (this.queryStr.onDate && !isNaN(new Date(this.queryStr.onDate).getTime())) {
+        startOfDay = new Date(new Date(this.queryStr.onDate).setHours(0, 0, 0, 0));
+        endOfDay = new Date(new Date(this.queryStr.onDate).setHours(23, 59, 59, 999));
+      } else if (
+        this.queryStr.startDate &&
+        this.queryStr.endDate &&
+        !isNaN(new Date(this.queryStr.startDate).getTime()) &&
+        !isNaN(new Date(this.queryStr.endDate).getTime())
+      ) {
+        startOfDay = new Date(new Date(this.queryStr.startDate).setHours(0, 0, 0, 0));
+        endOfDay = new Date(new Date(this.queryStr.endDate).setHours(23, 59, 59, 999));
       } else {
         const today = new Date();
         const formattedDate = today.toISOString().split("T")[0];
-        startOfDay = new Date(new Date(formattedDate).setHours(0, 0, 0, 0))
-        // startOfDay;
-        endOfDay = new Date(new Date(formattedDate).setHours(23, 59, 59, 999))
-        // endOfDay;
+        startOfDay = new Date(new Date(formattedDate).setHours(0, 0, 0, 0));
+        endOfDay = new Date(new Date(formattedDate).setHours(23, 59, 59, 999));
       }
 
     

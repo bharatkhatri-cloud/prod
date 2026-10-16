@@ -44,30 +44,40 @@ const DataOfMouldRejection = () => {
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">S.No.</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Mould ID</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Reason Of Rejection</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Type Of Mould</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Rejection Time</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Mould Filling Time</th>
-                                        <th className="px-6 py-6 text-sm font-medium text-gray-500 uppercase border">Mould Rejected By</th>
+                                        <th className="px-6 py-4 text-sm font-medium text-gray-500 uppercase border">S.No.</th>
+                                        <th className="px-6 py-4 text-sm font-medium text-gray-500 uppercase border">Mould ID</th>
+                                        <th className="px-6 py-4 text-sm font-medium text-gray-500 uppercase border">Mix ID</th>
+                                        <th className="px-6 py-4 text-sm font-medium text-gray-500 uppercase border">Reason Of Rejection</th>
+                                        <th className="px-6 py-4 text-sm font-medium text-gray-500 uppercase border">Type Of Mould</th>
+                                        <th className="px-6 py-4 text-sm font-medium text-gray-500 uppercase border">Rejection Time</th>
+                                        <th className="px-6 py-4 text-sm font-medium text-gray-500 uppercase border">Mould Filling Time</th>
+                                        <th className="px-6 py-4 text-sm font-medium text-gray-500 uppercase border">Mould Rejected By</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
                                     {state.isLoading &&
                                         <tr>
-                                            <td colSpan={'6'} className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center">
+                                            <td colSpan={'8'} className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center">
                                                 <Loader />
                                             </td>
                                         </tr>
                                     }
 
                                     {(Array.isArray(getAllDataFromCollection) ? getAllDataFromCollection : []).map((currData, index) => (
-                                        <tr className='hover:bg-teal-300' key={currData._id}>
+                                        <tr className='hover:bg-teal-50 transition-colors' key={currData._id}>
 
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{index + 1}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{currData?.mouldId}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{currData?.mouldRejectionReason}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-mono font-medium text-gray-900 border">{currData?.mouldId}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm border">
+                                                {currData?.mixId ? (
+                                                    <span className="px-2 py-0.5 text-xs font-semibold rounded bg-purple-100 text-purple-800 font-mono">
+                                                        {currData.mixId}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-gray-400 font-mono text-xs">—</span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-rose-600 border">{currData?.mouldRejectionReason}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{currData?.typeOfMould}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{FormatTime(currData?.mouldRejectionDate)}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 border">{FormatTime(currData?.fillingDate)}</td>

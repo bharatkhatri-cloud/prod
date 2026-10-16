@@ -9,7 +9,7 @@ export const fetchDataOfAllModules = createAsyncThunk(
   "dashboard/fetchDataOfAllModules",
   async (queryParams, { rejectWithValue }) => {
     try {
-      const springBackend = process.env.REACT_APP_SPRING_BACKEND || 'http://localhost:8080/';
+      const springBackend = process.env.REACT_APP_SPRING_BACKEND || '/';
       const startDate = queryParams?.startDate || '';
       const endDate = queryParams?.endDate || '';
       const url = `${springBackend}api/v2s/dashboard/dashboard-count?startDate=${startDate}&endDate=${endDate}`;
@@ -36,7 +36,7 @@ export const fetchDataOfLcModules = createAsyncThunk(
   "dashboard/fetchDataOfLcModules",
   async (queryParams, { rejectWithValue }) => {
     try {
-      const springBackend = process.env.REACT_APP_SPRING_BACKEND || 'http://localhost:8080/';
+      const springBackend = process.env.REACT_APP_SPRING_BACKEND || '/';
       const startDate = queryParams?.startDate || '';
       const endDate = queryParams?.endDate || '';
       const url = `${springBackend}api/v2s/dashboard/lc-analytics?fromDate=${startDate}&toDate=${endDate}`;
@@ -64,7 +64,7 @@ export const fetchDataOfBagModules = createAsyncThunk(
   "dashboard/fetchDataOfBagModules",
   async (queryParams, { rejectWithValue }) => {
     try {
-      const springBackend = process.env.REACT_APP_SPRING_BACKEND || 'http://localhost:8080/';
+      const springBackend = process.env.REACT_APP_SPRING_BACKEND || '/';
       const startDate = queryParams?.startDate || '';
       const endDate = queryParams?.endDate || '';
       const url = `${springBackend}api/v2s/dashboard/bag-analytics?fromDate=${startDate}&toDate=${endDate}`;
